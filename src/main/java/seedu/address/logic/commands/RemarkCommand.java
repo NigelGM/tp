@@ -62,4 +62,12 @@ public class RemarkCommand extends Command {
         String message = !remark.value.isEmpty() ? MESSAGE_ADD_REMARK_SUCCESS : MESSAGE_DELETE_REMARK_SUCCESS;
         return String.format(message, Messages.format(personToEdit));
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof RemarkCommand // instanceof handles nulls
+                && index.equals(((RemarkCommand) other).index)
+                && remark.equals(((RemarkCommand) other).remark)); // state check
+    }
 }
