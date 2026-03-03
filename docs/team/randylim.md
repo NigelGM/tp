@@ -24,6 +24,11 @@ Given below are my contributions to the project.
 
     * Developer Guide:
 
+    * ReadMe: 
+      * Add Ui mockup image
+      * Update build status badge link
+      * Update ReadMe content to reflect our team's project
+
 * **Community**:
     * PRs reviewed (with non-trivial review comments):
     * Contributed to forum discussions (examples: )
