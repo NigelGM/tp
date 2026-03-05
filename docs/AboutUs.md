@@ -11,6 +11,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
+### Anish Kousik
+
+<img src="images/anishkousik.png" width="200px">
+
+[[github](https://github.com/anishkousik)]
+
+* Role: Developer
+
 ### Niik Seah
 
 <img src="images/niikseah.png" width="200px">
