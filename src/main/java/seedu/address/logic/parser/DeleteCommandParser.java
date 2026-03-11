@@ -75,7 +75,8 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE_RANGE_INDICES));
         }
 
-        Index startIndex, endIndex;
+        Index startIndex;
+        Index endIndex;
         try {
             startIndex = ParserUtil.parseIndex(matcher.group("start").trim());
             endIndex = ParserUtil.parseIndex(matcher.group("end").trim());
