@@ -16,11 +16,13 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
+    public static final String VALID_IC = "S1234567Z";
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
@@ -35,6 +37,7 @@ public class ParserUtilTest {
     private static final String VALID_TAG_2 = "neighbour";
 
     private static final String WHITESPACE = " \t\r\n";
+    public static final String INVALID_IC = "S1234567"; // missing last character
 
     @Test
     public void parseIndex_invalidInput_throwsParseException() {
@@ -192,5 +195,28 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseIc_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseIc((String) null));
+    }
+
+    @Test
+    public void parseIc_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseIc(INVALID_IC));
+    }
+
+    @Test
+    public void parseIc_validValueWithoutWhitespace_returnsIc() throws Exception {
+        Ic expectedIc = new Ic(VALID_IC);
+        assertEquals(expectedIc, ParserUtil.parseIc(VALID_IC));
+    }
+
+    @Test
+    public void parseIc_validValueWithWhitespace_returnsTrimmedIc() throws Exception {
+        String icWithWhitespace = WHITESPACE + VALID_IC + WHITESPACE;
+        Ic expectedIc = new Ic(VALID_IC);
+        assertEquals(expectedIc, ParserUtil.parseIc(icWithWhitespace));
     }
 }

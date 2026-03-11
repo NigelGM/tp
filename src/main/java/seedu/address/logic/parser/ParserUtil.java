@@ -132,7 +132,7 @@ public class ParserUtil {
     public static Ic parseIc(String ic) throws ParseException {
         requireNonNull(ic);
         String trimmedIc = ic.trim();
-        if (!Ic.isValidIc(ic)) {
+        if (!Ic.isValidIc(trimmedIc)) {
             throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
         }
         return new Ic(trimmedIc);
