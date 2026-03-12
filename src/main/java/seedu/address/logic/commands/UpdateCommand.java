@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -23,6 +24,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -43,6 +45,7 @@ public class UpdateCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_IC + "IC] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -92,16 +95,17 @@ public class UpdateCommand extends Command {
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
      */
-    private static Person createUpdatedPerson(Person personToUpdate, UpdatePersonDescriptor editPersonDescriptor) {
+    private static Person createUpdatedPerson(Person personToUpdate, UpdatePersonDescriptor updatePersonDescriptor) {
         assert personToUpdate != null;
 
-        Name updatedName = editPersonDescriptor.getName().orElse(personToUpdate.getName());
-        Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToUpdate.getPhone());
-        Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToUpdate.getEmail());
-        Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToUpdate.getAddress());
-        Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToUpdate.getTags());
+        Name updatedName = updatePersonDescriptor.getName().orElse(personToUpdate.getName());
+        Phone updatedPhone = updatePersonDescriptor.getPhone().orElse(personToUpdate.getPhone());
+        Email updatedEmail = updatePersonDescriptor.getEmail().orElse(personToUpdate.getEmail());
+        Address updatedAddress = updatePersonDescriptor.getAddress().orElse(personToUpdate.getAddress());
+        Set<Tag> updatedTags = updatePersonDescriptor.getTags().orElse(personToUpdate.getTags());
+        Ic updateIc = updatePersonDescriptor.getIc().orElse(personToUpdate.getIc());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updateIc);
     }
 
     @Override
@@ -137,6 +141,7 @@ public class UpdateCommand extends Command {
         private Email email;
         private Address address;
         private Set<Tag> tags;
+        private Ic ic;
 
         public UpdatePersonDescriptor() {}
 
@@ -150,6 +155,7 @@ public class UpdateCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setTags(toCopy.tags);
+            setIc(toCopy.ic);
         }
 
         /**
@@ -191,6 +197,14 @@ public class UpdateCommand extends Command {
             return Optional.ofNullable(address);
         }
 
+        public void setIc(Ic ic) {
+            this.ic = ic;
+        }
+
+        public Optional<Ic> getIc() {
+            return Optional.ofNullable(ic);
+        }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -215,15 +229,16 @@ public class UpdateCommand extends Command {
             }
 
             // instanceof handles nulls
-            if (!(other instanceof UpdatePersonDescriptor otherEditPersonDescriptor)) {
+            if (!(other instanceof UpdatePersonDescriptor otherUpdatePersonDescriptor)) {
                 return false;
             }
 
-            return Objects.equals(name, otherEditPersonDescriptor.name)
-                    && Objects.equals(phone, otherEditPersonDescriptor.phone)
-                    && Objects.equals(email, otherEditPersonDescriptor.email)
-                    && Objects.equals(address, otherEditPersonDescriptor.address)
-                    && Objects.equals(tags, otherEditPersonDescriptor.tags);
+            return Objects.equals(name, otherUpdatePersonDescriptor.name)
+                    && Objects.equals(phone, otherUpdatePersonDescriptor.phone)
+                    && Objects.equals(email, otherUpdatePersonDescriptor.email)
+                    && Objects.equals(address, otherUpdatePersonDescriptor.address)
+                    && Objects.equals(tags, otherUpdatePersonDescriptor.tags)
+                    && Objects.equals(ic, otherUpdatePersonDescriptor.ic);
         }
 
         @Override
@@ -234,6 +249,7 @@ public class UpdateCommand extends Command {
                     .add("email", email)
                     .add("address", address)
                     .add("tags", tags)
+                    .add("ic", ic)
                     .toString();
         }
     }
