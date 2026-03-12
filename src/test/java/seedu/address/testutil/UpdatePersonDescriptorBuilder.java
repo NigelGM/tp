@@ -7,9 +7,11 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.UpdateCommand.UpdatePersonDescriptor;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.UrgencyLevel;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -38,6 +40,7 @@ public class UpdatePersonDescriptorBuilder {
         descriptor.setAddress(person.getAddress());
         descriptor.setTags(person.getTags());
         descriptor.setIc(person.getIc());
+        descriptor.setUrgencyLevel(person.getUrgencyLevel());
     }
 
     /**
@@ -86,7 +89,15 @@ public class UpdatePersonDescriptorBuilder {
      * Sets the {@code Ic} of the {@code UpdatePersonDescriptor} that we are building.
      */
     public UpdatePersonDescriptorBuilder withIc(String ic) {
-        descriptor.setIc(new seedu.address.model.person.Ic(ic));
+        descriptor.setIc(new Ic(ic));
+        return this;
+    }
+
+    /**
+     * Sets the {@code UrgencyLevel} of the {@code UpdatePersonDescriptor} that we are building.
+     */
+    public UpdatePersonDescriptorBuilder withUrgencyLevel(String urgencyLevel) {
+        descriptor.setUrgencyLevel(new UrgencyLevel(urgencyLevel));
         return this;
     }
 

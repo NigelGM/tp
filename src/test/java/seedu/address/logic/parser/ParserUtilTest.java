@@ -19,6 +19,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.UrgencyLevel;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -28,6 +29,7 @@ public class ParserUtilTest {
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
+    private static final String INVALID_URGENCY_LEVEL = "urgent";
 
     private static final String VALID_IC = "S1234567Z";
     private static final String VALID_NAME = "Rachel Walker";
@@ -36,6 +38,7 @@ public class ParserUtilTest {
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
+    private static final String VALID_URGENCY_LEVEL = "high";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -218,5 +221,28 @@ public class ParserUtilTest {
         String icWithWhitespace = WHITESPACE + VALID_IC + WHITESPACE;
         Ic expectedIc = new Ic(VALID_IC);
         assertEquals(expectedIc, ParserUtil.parseIc(icWithWhitespace));
+    }
+
+    @Test
+    public void parseUrgencyLevel_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseUrgencyLevel(null));
+    }
+
+    @Test
+    public void parseUrgencyLevel_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseUrgencyLevel(INVALID_URGENCY_LEVEL));
+    }
+
+    @Test
+    public void parseUrgencyLevel_validValueWithoutWhiteSpace_returnsUrgencyLevel() throws Exception {
+        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_URGENCY_LEVEL);
+        assertEquals(expectedUrgencyLevel, ParserUtil.parseUrgencyLevel(VALID_URGENCY_LEVEL));
+    }
+
+    @Test
+    public void parseUrgencyLevel_validValueWithWhiteSpace_returnsTrimmedUrgencyLevel() throws Exception {
+        String urgencyLevelWithWhitespace = WHITESPACE + VALID_URGENCY_LEVEL + WHITESPACE;
+        UrgencyLevel expectedUrgencyLevel = new UrgencyLevel(VALID_URGENCY_LEVEL);
+        assertEquals(expectedUrgencyLevel, ParserUtil.parseUrgencyLevel(urgencyLevelWithWhitespace));
     }
 }

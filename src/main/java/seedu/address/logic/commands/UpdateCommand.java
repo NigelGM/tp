@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -28,6 +29,7 @@ import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.UrgencyLevel;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -46,6 +48,7 @@ public class UpdateCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_IC + "IC] "
+            + "[" + PREFIX_URGENCY + "LEVEL] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -103,9 +106,17 @@ public class UpdateCommand extends Command {
         Email updatedEmail = updatePersonDescriptor.getEmail().orElse(personToUpdate.getEmail());
         Address updatedAddress = updatePersonDescriptor.getAddress().orElse(personToUpdate.getAddress());
         Set<Tag> updatedTags = updatePersonDescriptor.getTags().orElse(personToUpdate.getTags());
-        Ic updateIc = updatePersonDescriptor.getIc().orElse(personToUpdate.getIc());
+        Ic updatedIc = updatePersonDescriptor.getIc().orElse(personToUpdate.getIc());
+        UrgencyLevel updatedUrgencyLevel = updatePersonDescriptor.getUrgencyLevel()
+                .orElse(personToUpdate.getUrgencyLevel());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updateIc);
+        return new Person(updatedName,
+                updatedPhone,
+                updatedEmail,
+                updatedAddress,
+                updatedTags,
+                updatedIc,
+                updatedUrgencyLevel);
     }
 
     @Override
@@ -142,6 +153,7 @@ public class UpdateCommand extends Command {
         private Address address;
         private Set<Tag> tags;
         private Ic ic;
+        private UrgencyLevel urgencyLevel;
 
         public UpdatePersonDescriptor() {}
 
@@ -155,6 +167,7 @@ public class UpdateCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setTags(toCopy.tags);
+            setUrgencyLevel(toCopy.urgencyLevel);
             setIc(toCopy.ic);
         }
 
@@ -162,7 +175,7 @@ public class UpdateCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, urgencyLevel, ic);
         }
 
         public void setName(Name name) {
@@ -222,6 +235,14 @@ public class UpdateCommand extends Command {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
         }
 
+        public void setUrgencyLevel(UrgencyLevel urgencyLevel) {
+            this.urgencyLevel = urgencyLevel;
+        }
+
+        public Optional<UrgencyLevel> getUrgencyLevel() {
+            return Optional.ofNullable(urgencyLevel);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -238,7 +259,8 @@ public class UpdateCommand extends Command {
                     && Objects.equals(email, otherUpdatePersonDescriptor.email)
                     && Objects.equals(address, otherUpdatePersonDescriptor.address)
                     && Objects.equals(tags, otherUpdatePersonDescriptor.tags)
-                    && Objects.equals(ic, otherUpdatePersonDescriptor.ic);
+                    && Objects.equals(ic, otherUpdatePersonDescriptor.ic)
+                    && Objects.equals(urgencyLevel, otherUpdatePersonDescriptor.urgencyLevel);
         }
 
         @Override
@@ -250,6 +272,7 @@ public class UpdateCommand extends Command {
                     .add("address", address)
                     .add("tags", tags)
                     .add("ic", ic)
+                    .add("urgencyLevel", urgencyLevel)
                     .toString();
         }
     }

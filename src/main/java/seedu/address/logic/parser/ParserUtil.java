@@ -14,6 +14,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.UrgencyLevel;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -121,6 +122,21 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Parses a {@code String urgencyLevel} into an {@code UrgencyLevel}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code urgencyLevel} is invalid.
+     */
+    public static UrgencyLevel parseUrgencyLevel(String urgencyLevel) throws ParseException {
+        requireNonNull(urgencyLevel);
+        String trimmedUrgencyLevel = urgencyLevel.trim();
+        if (!UrgencyLevel.isValidUrgencyLevel(trimmedUrgencyLevel)) {
+            throw new ParseException(UrgencyLevel.MESSAGE_CONSTRAINTS);
+        }
+        return new UrgencyLevel(trimmedUrgencyLevel);
     }
 
     /**

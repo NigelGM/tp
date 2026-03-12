@@ -71,7 +71,8 @@ public class UpdatePersonDescriptorTest {
                 + updatePersonDescriptor.getEmail().orElse(null) + ", address="
                 + updatePersonDescriptor.getAddress().orElse(null) + ", tags="
                 + updatePersonDescriptor.getTags().orElse(null) + ", ic="
-                + updatePersonDescriptor.getIc().orElse(null) + "}";
+                + updatePersonDescriptor.getIc().orElse(null) + ", urgencyLevel="
+                + updatePersonDescriptor.getUrgencyLevel().orElse(null) + "}";
         assertEquals(expected, updatePersonDescriptor.toString());
     }
 }
