@@ -278,7 +278,7 @@ public class AddCommandParserTest {
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND
-                        + IC_DESC_BOB+ INVALID_URGENCY_LEVEL_DESC,
+                        + IC_DESC_BOB + INVALID_URGENCY_LEVEL_DESC,
                 UrgencyLevel.MESSAGE_CONSTRAINTS);
 
         // invalid ic
