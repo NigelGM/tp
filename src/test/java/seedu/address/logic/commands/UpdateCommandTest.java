@@ -178,10 +178,10 @@ public class UpdateCommandTest {
     @Test
     public void toStringMethod() {
         Index index = Index.fromOneBased(1);
-        UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
-        UpdateCommand updateCommand = new UpdateCommand(index, updatePersonDescriptor);
-        String expected = UpdateCommand.class.getCanonicalName() + "{index=" + index + ", updatePersonDescriptor="
-                + updatePersonDescriptor + "}";
+        UpdatePersonDescriptor editPersonDescriptor = new UpdatePersonDescriptor();
+        UpdateCommand updateCommand = new UpdateCommand(index, editPersonDescriptor);
+        String expected = UpdateCommand.class.getCanonicalName() + "{index=" + index + ", editPersonDescriptor="
+                + editPersonDescriptor + "}";
         assertEquals(expected, updateCommand.toString());
     }
 
