@@ -51,7 +51,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         // Legacy behaviour: no prefixes, treat entire args as name keywords
-        if (!hasName && !hasIc && !hasPhone && !trimmedArgs.isEmpty()) {
+        if (!hasName && !hasIc && !hasPhone) {
             List<String> legacyKeywords = Arrays.asList(trimmedArgs.split("\\s+"));
             String criteriaDescription = "Patient Name: " + trimmedArgs;
             return new FindCommand(new NameContainsKeywordsPredicate(legacyKeywords), criteriaDescription);
