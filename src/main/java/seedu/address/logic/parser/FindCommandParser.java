@@ -30,14 +30,9 @@ public class FindCommandParser implements Parser<FindCommand> {
      */
     public FindCommand parse(String args) throws ParseException {
         String trimmedArgs = args.trim();
-        // No text at all
-        if (args.isEmpty()) {
-            throw new ParseException("At least one parameter to search with must be provided.");
-        }
-        // Only whitespace after command word -> treat as invalid format (keeps existing behaviour).
+        // No text at all or only whitespace after the command word
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            throw new ParseException("At least one parameter to search with must be provided.");
         }
 
         ArgumentMultimap argMultimap =
@@ -46,11 +41,6 @@ public class FindCommandParser implements Parser<FindCommand> {
         boolean hasName = argMultimap.getValue(PREFIX_NAME).isPresent();
         boolean hasIc = argMultimap.getValue(PREFIX_IC).isPresent();
         boolean hasPhone = argMultimap.getValue(PREFIX_PHONE).isPresent();
-
-        // At least one search parameter must be provided (either legacy name or a prefixed field).
-        if (!hasName && !hasIc && !hasPhone && argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException("At least one parameter to search with must be provided.");
-        }
 
         // Disallow duplicate prefixes.
         if (argMultimap.getAllValues(PREFIX_NAME).size() > 1
