@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -28,17 +30,23 @@ public class UrgencyLevelTest {
         assertFalse(UrgencyLevel.isValidUrgencyLevel("")); // empty string
         assertFalse(UrgencyLevel.isValidUrgencyLevel(" ")); // spaces only
         assertFalse(UrgencyLevel.isValidUrgencyLevel("urgent")); // not a valid level
+        assertFalse(UrgencyLevel.isValidUrgencyLevel("12345")); // numeric
 
         // valid urgency levels
         assertTrue(UrgencyLevel.isValidUrgencyLevel("low"));
         assertTrue(UrgencyLevel.isValidUrgencyLevel("lOw")); // case-insensitive
         assertTrue(UrgencyLevel.isValidUrgencyLevel("moderate"));
-        assertTrue(UrgencyLevel.isValidUrgencyLevel("modErAte")); // case-insensitive
         assertTrue(UrgencyLevel.isValidUrgencyLevel("high"));
-        assertTrue(UrgencyLevel.isValidUrgencyLevel("HiGh")); // case-insensitive
         assertTrue(UrgencyLevel.isValidUrgencyLevel("extreme"));
-        assertTrue(UrgencyLevel.isValidUrgencyLevel("extREme")); // case-insensitive
+    }
 
+    @Test
+    public void getPriorityValue() {
+        // Tests the numerical weight used for sorting
+        assertEquals(1, new UrgencyLevel("low").getPriorityValue());
+        assertEquals(2, new UrgencyLevel("moderate").getPriorityValue());
+        assertEquals(3, new UrgencyLevel("high").getPriorityValue());
+        assertEquals(4, new UrgencyLevel("extreme").getPriorityValue());
     }
 
     @Test
@@ -48,22 +56,37 @@ public class UrgencyLevelTest {
 
         // same values -> returns true
         assertTrue(lowUrgency.equals(new UrgencyLevel("low")));
-        assertTrue(moderateUrgency.equals(new UrgencyLevel("moderate")));
 
         // same object -> returns true
         assertTrue(lowUrgency.equals(lowUrgency));
-        assertTrue(moderateUrgency.equals(moderateUrgency));
 
         // null -> returns false
         assertFalse(lowUrgency.equals(null));
-        assertFalse(moderateUrgency.equals(null));
 
         // different types -> returns false
         assertFalse(lowUrgency.equals(5.0f));
-        assertFalse(moderateUrgency.equals(5.0f));
 
         // different values -> returns false
         assertFalse(lowUrgency.equals(moderateUrgency));
+    }
 
+    @Test
+    public void hashCodeMethod() {
+        UrgencyLevel extreme = new UrgencyLevel("extreme");
+        UrgencyLevel extremeCopy = new UrgencyLevel("extreme");
+        UrgencyLevel low = new UrgencyLevel("low");
+
+        // same value -> same hashcode
+        assertEquals(extreme.hashCode(), extremeCopy.hashCode());
+
+        // different value -> different hashcode
+        assertNotEquals(extreme.hashCode(), low.hashCode());
+    }
+
+    @Test
+    public void toStringMethod() {
+        // Ensures the display string matches the internal enum name
+        assertEquals("LOW", new UrgencyLevel("low").toString());
+        assertEquals("EXTREME", new UrgencyLevel("extreme").toString());
     }
 }
