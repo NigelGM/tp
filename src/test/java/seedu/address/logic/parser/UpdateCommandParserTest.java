@@ -94,12 +94,16 @@ public class UpdateCommandParserTest {
 
         // while parsing {@code PREFIX_SYMPTOM} alone will reset the symptoms of the {@code Person} being edited,
         // parsing it together with a valid symptom results in error
-        assertParseFailure(parser, "1" + SYMPTOM_DESC_FRIEND + SYMPTOM_DESC_HUSBAND + SYMPTOM_EMPTY, Symptom.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + SYMPTOM_DESC_FRIEND + SYMPTOM_EMPTY + SYMPTOM_DESC_HUSBAND, Symptom.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + SYMPTOM_EMPTY + SYMPTOM_DESC_FRIEND + SYMPTOM_DESC_HUSBAND, Symptom.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser,
+                "1" + SYMPTOM_DESC_FRIEND + SYMPTOM_DESC_HUSBAND + SYMPTOM_EMPTY, Symptom.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser,
+                "1" + SYMPTOM_DESC_FRIEND + SYMPTOM_EMPTY + SYMPTOM_DESC_HUSBAND, Symptom.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser,
+                "1" + SYMPTOM_EMPTY + SYMPTOM_DESC_FRIEND + SYMPTOM_DESC_HUSBAND, Symptom.MESSAGE_CONSTRAINTS);
 
         // multiple invalid values, but only the first invalid value is captured
-        assertParseFailure(parser, "1" + INVALID_NAME_DESC + INVALID_EMAIL_DESC + VALID_ADDRESS_AMY + VALID_PHONE_AMY,
+        assertParseFailure(parser,
+                "1" + INVALID_NAME_DESC + INVALID_EMAIL_DESC + VALID_ADDRESS_AMY + VALID_PHONE_AMY,
                 Name.MESSAGE_CONSTRAINTS);
     }
 

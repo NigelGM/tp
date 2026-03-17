@@ -184,7 +184,8 @@ public class ParserUtilTest {
 
     @Test
     public void parseSymptoms_collectionWithInvalidSymptoms_throwsParseException() {
-        assertThrows(ParseException.class, () -> ParserUtil.parseSymptoms(Arrays.asList(VALID_SYMPTOM_1, INVALID_SYMPTOM)));
+        assertThrows(ParseException.class, () -> ParserUtil.parseSymptoms(Arrays.asList(
+                VALID_SYMPTOM_1, INVALID_SYMPTOM)));
     }
 
     @Test
@@ -195,7 +196,8 @@ public class ParserUtilTest {
     @Test
     public void parseSymptoms_collectionWithValidSymptoms_returnsSymptomSet() throws Exception {
         Set<Symptom> actualSymptomSet = ParserUtil.parseSymptoms(Arrays.asList(VALID_SYMPTOM_1, VALID_SYMPTOM_2));
-        Set<Symptom> expectedSymptomSet = new HashSet<Symptom>(Arrays.asList(new Symptom(VALID_SYMPTOM_1), new Symptom(VALID_SYMPTOM_2)));
+        Set<Symptom> expectedSymptomSet = new HashSet<Symptom>(Arrays.asList(
+                new Symptom(VALID_SYMPTOM_1), new Symptom(VALID_SYMPTOM_2)));
 
         assertEquals(expectedSymptomSet, actualSymptomSet);
     }

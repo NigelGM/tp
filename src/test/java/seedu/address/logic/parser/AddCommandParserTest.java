@@ -72,7 +72,9 @@ public class AddCommandParserTest {
 
 
         // multiple symptoms - all accepted
-        Person expectedPersonMultipleSymptoms = new PersonBuilder(BOB).withSymptoms(VALID_SYMPTOM_FRIEND, VALID_SYMPTOM_HUSBAND)
+        Person expectedPersonMultipleSymptoms = new PersonBuilder(BOB).withSymptoms(
+                        VALID_SYMPTOM_FRIEND,
+                        VALID_SYMPTOM_HUSBAND)
                 .build();
         assertParseSuccess(parser, NAME_DESC_BOB
                         + PHONE_DESC_BOB

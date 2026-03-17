@@ -100,7 +100,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
         if (symptoms.isEmpty()) {
             return Optional.empty();
         }
-        Collection<String> symptomSet = symptoms.size() == 1 && symptoms.contains("") ? Collections.emptySet() : symptoms;
+        Collection<String> symptomSet = symptoms.size() == 1 && symptoms.contains("")
+                ? Collections.emptySet() : symptoms;
         return Optional.of(ParserUtil.parseSymptoms(symptomSet));
     }
 
