@@ -45,7 +45,7 @@ public class RangeDeleteCommand extends DeleteCommand {
         }
 
         if (startIndex.getZeroBased() >= lastShownList.size() || endIndex.getZeroBased() >= lastShownList.size()) {
-            Index lastIndex = Index.fromZeroBased(lastShownList.size() - 1);
+            Index lastIndex = Index.fromOneBased(model.getFilteredPersonList().size());
             throw new CommandException(Messages.getErrorMessageForInvalidIndices(lastIndex));
         }
 
