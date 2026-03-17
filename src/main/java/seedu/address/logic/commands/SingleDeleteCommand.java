@@ -30,7 +30,8 @@ public class SingleDeleteCommand extends DeleteCommand {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            Index lastIndex = Index.fromZeroBased(lastShownList.size() - 1);
+            throw new CommandException(Messages.getErrorMessageForInvalidIndex(lastIndex));
         }
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());

@@ -31,9 +31,13 @@ public class RangeDeleteCommand extends DeleteCommand {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (startIndex.getZeroBased() >= lastShownList.size() || endIndex.getZeroBased() >= lastShownList.size()
-                || startIndex.getZeroBased() > endIndex.getZeroBased()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_INDICES);
+        if (startIndex.getZeroBased() >= lastShownList.size() || endIndex.getZeroBased() >= lastShownList.size()) {
+            Index lastIndex = Index.fromZeroBased(lastShownList.size() - 1);
+            throw new CommandException(Messages.getErrorMessageForInvalidIndices(lastIndex));
+        }
+
+        if (startIndex.getZeroBased() > endIndex.getZeroBased()) {
+            throw new CommandException(Messages.getErrorMessageForInvalidRangeIndices());
         }
 
         int numberOfPersonsToDelete = endIndex.getZeroBased() - startIndex.getZeroBased() + 1;

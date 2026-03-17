@@ -2,6 +2,8 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
+        if (args == null || args.trim().isEmpty()) {
+            throw new ParseException(String.format(
+                    Messages.MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+        }
+
         if (args.contains(MULTIPLE_INDICES_DELIMITER)) {
             return parseMultipleIndices(args);
         } else if (args.contains(RANGE_INDICES_DELIMITER)) {
@@ -58,14 +65,23 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         String[] indexStrings = matcher.group("indices").split(MULTIPLE_INDICES_DELIMITER);
-        Index[] indices = new Index[indexStrings.length];
+        Set<Index> indices = new HashSet<>();
+        Set<Index> duplicateIndices = new HashSet<>();
         for (int i = 0; i < indexStrings.length; i++) {
             try {
-                indices[i] = ParserUtil.parseIndex(indexStrings[i].trim());
+                Index index = ParserUtil.parseIndex(indexStrings[i].trim());
+                boolean isUnique = indices.add(index);
+                if (!isUnique) {
+                    duplicateIndices.add(index);
+                }
             } catch (ParseException pe) {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, MultipleDeleteCommand.MESSAGE_USAGE), pe);
             }
+        }
+
+        if (!duplicateIndices.isEmpty()) {
+            throw new ParseException(Messages.getErrorMessageForDuplicateIndices(duplicateIndices));
         }
         return new MultipleDeleteCommand(indices);
     }
@@ -85,10 +101,6 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         } catch (ParseException pe) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, RangeDeleteCommand.MESSAGE_USAGE), pe);
-        }
-
-        if (startIndex.getZeroBased() > endIndex.getZeroBased()) {
-            throw new ParseException(Messages.MESSAGE_INVALID_PERSON_INDEX_RANGE);
         }
 
         return new RangeDeleteCommand(startIndex, endIndex);

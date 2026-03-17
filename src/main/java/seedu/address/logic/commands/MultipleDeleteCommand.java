@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,12 +16,12 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the people identified by the index numbers used in the displayed person list.\n"
-            + "Parameters: INDEX,INDEX[,INDEX,...] (must be positive integers)\n"
+            + "Parameters: INDEX,INDEX[,INDEX,...] (must be unique positive integers)\n"
             + "Example: " + COMMAND_WORD + " 1,2,4";
 
-    private final Index[] targetIndices;
+    private final Set<Index> targetIndices;
 
-    public MultipleDeleteCommand(Index[] targetIndices) {
+    public MultipleDeleteCommand(Set<Index> targetIndices) {
         this.targetIndices = targetIndices;
     }
 
@@ -29,15 +30,15 @@ public class MultipleDeleteCommand extends DeleteCommand {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        Person[] personsToDelete = new Person[targetIndices.length];
-        for (int i = 0; i < targetIndices.length; i++) {
-            Index targetIndex = targetIndices[i];
+        Set<Person> personsToDelete = new HashSet<>();
+        for (Index targetIndex : targetIndices) {
             if (targetIndex.getZeroBased() >= lastShownList.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_INDICES);
+                Index lastIndex = Index.fromZeroBased(lastShownList.size() - 1);
+                throw new CommandException(Messages.getErrorMessageForInvalidIndices(lastIndex));
             }
 
             Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
-            personsToDelete[i] = personToDelete;
+            personsToDelete.add(personToDelete);
         }
 
         StringBuilder deletedPersonsString = new StringBuilder();
@@ -50,6 +51,6 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     @Override
     public Set<Index> getTargetIndicesAsSet() {
-        return Set.of(targetIndices);
+        return targetIndices;
     }
 }
