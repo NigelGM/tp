@@ -11,6 +11,9 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
+/**
+ * Deletes a range of people identified using their displayed index from the address book.
+ */
 public class RangeDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
@@ -21,6 +24,12 @@ public class RangeDeleteCommand extends DeleteCommand {
     private final Index startIndex;
     private final Index endIndex;
 
+    /**
+     * Creates a RangeDeleteCommand to delete the specified range of people.
+     *
+     * @param startIndex The starting index of the range (inclusive).
+     * @param endIndex The ending index of the range (inclusive).
+     */
     public RangeDeleteCommand(Index startIndex, Index endIndex) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;

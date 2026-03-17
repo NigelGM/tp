@@ -11,6 +11,9 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
+/**
+ * Deletes a person identified using its displayed index from the address book.
+ */
 public class SingleDeleteCommand extends DeleteCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
