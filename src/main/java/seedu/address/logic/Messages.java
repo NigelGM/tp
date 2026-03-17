@@ -27,6 +27,7 @@ public class Messages {
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_DUPLICATE_INDICES =
             "Duplicated indices are not allowed. The following indices provided are duplicated: ";
+    public static final String MESSAGE_NO_PERSONS = "There are no patient records to %1$s.";
 
     /**
      * Returns an error message indicating an out of range index and the valid person index range.
@@ -75,6 +76,13 @@ public class Messages {
                 .collect(Collectors.toSet());
 
         return MESSAGE_DUPLICATE_INDICES + String.join(", ", duplicateIndexStrings);
+    }
+
+    /**
+     * Returns an error message indicating that there are no persons to perform the specified action on.
+     */
+    public static String getErrorMessageForNoPersons(String commandWord) {
+        return String.format(MESSAGE_NO_PERSONS, commandWord);
     }
 
     /**

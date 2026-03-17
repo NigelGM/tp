@@ -33,6 +33,10 @@ public class MultipleDeleteCommand extends DeleteCommand {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
+        if (lastShownList.isEmpty()) {
+            throw new CommandException(Messages.getErrorMessageForNoPersons(COMMAND_WORD));
+        }
+
         Set<Person> personsToDelete = new HashSet<>();
         for (Index targetIndex : targetIndices) {
             if (targetIndex.getZeroBased() >= lastShownList.size()) {
