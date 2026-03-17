@@ -117,4 +117,17 @@ public class UrgencyLevelTest {
         // Ensures weird casing is normalized in the toString
         assertEquals("HIGH", new UrgencyLevel("hIgH").toString());
     }
+
+    @Test
+    public void getValueMethod() {
+        // Ensures the getValue method returns the strict lowercase string for CSS styling
+        assertEquals("low", new UrgencyLevel("low").getValue());
+        assertEquals("moderate", new UrgencyLevel("moderate").getValue());
+        assertEquals("high", new UrgencyLevel("high").getValue());
+        assertEquals("extreme", new UrgencyLevel("extreme").getValue());
+
+        // Ensures it returns lowercase even if the object was created with weird casing
+        assertEquals("extreme", new UrgencyLevel("eXtReMe").getValue());
+        assertEquals("high", new UrgencyLevel("HIGH").getValue());
+    }
 }
