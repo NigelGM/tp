@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -30,7 +31,8 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "ADDRESS "
             + PREFIX_IC + "IC "
             + PREFIX_URGENCY + "LEVEL"
-            + "[" + PREFIX_SYMPTOM + "SYMPTOM]...\n"
+            + "[" + PREFIX_SYMPTOM + "SYMPTOM]"
+            + "[" + PREFIX_NOTES + "NOTES]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_PATIENT_NAME + "John Doe "
             + PREFIX_PATIENT_PHONE + "98765432 "
@@ -39,7 +41,8 @@ public class AddCommand extends Command {
             + PREFIX_IC + "S1234567A "
             + PREFIX_URGENCY + "high "
             + PREFIX_SYMPTOM + "friends "
-            + PREFIX_SYMPTOM + "owesMoney";
+            + PREFIX_SYMPTOM + "owesMoney "
+            + PREFIX_NOTES + "Does not like to eat veggies";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";

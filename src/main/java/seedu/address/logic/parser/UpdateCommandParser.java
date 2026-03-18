@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -41,7 +42,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                         PREFIX_ADDRESS,
                         PREFIX_SYMPTOM,
                         PREFIX_IC,
-                        PREFIX_URGENCY
+                        PREFIX_URGENCY,
+                        PREFIX_NOTES
                 );
 
         Index index;
@@ -57,7 +59,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                 PREFIX_EMAIL,
                 PREFIX_ADDRESS,
                 PREFIX_IC,
-                PREFIX_URGENCY);
+                PREFIX_URGENCY,
+                PREFIX_NOTES);
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
@@ -82,6 +85,9 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
         }
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);
 
+        if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
+            updatePersonDescriptor.setNotes(ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get()));
+        }
         if (!updatePersonDescriptor.isAnyFieldEdited()) {
             throw new ParseException(UpdateCommand.MESSAGE_NOT_UPDATED);
         }

@@ -8,6 +8,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_FRIEND;
@@ -22,6 +24,7 @@ import java.util.List;
 import seedu.address.model.AddressBook;
 import seedu.address.model.person.Person;
 
+
 /**
  * A utility class containing a list of {@code Person} objects to be used in tests.
  */
@@ -33,6 +36,7 @@ public class TypicalPersons {
             .withSymptoms("friends")
             .withIc("S1111111A")
             .withUrgencyLevel("low")
+            .withNotes("Keeps saying hi")
             .build();
     public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
             .withAddress("311, Clementi Ave 2, #02-25")
@@ -41,6 +45,7 @@ public class TypicalPersons {
             .withSymptoms("owesMoney", "friends")
             .withIc("S2222222A")
             .withUrgencyLevel("high")
+            .withNotes("Cannot sit down")
             .build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz")
             .withPhone("95352563")
@@ -48,6 +53,7 @@ public class TypicalPersons {
             .withAddress("wall street")
             .withIc("S3333333A")
             .withUrgencyLevel("low")
+            .withNotes("Funny guy")
             .build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier")
             .withPhone("87652533")
@@ -56,6 +62,7 @@ public class TypicalPersons {
             .withSymptoms("friends")
             .withIc("S4444444A")
             .withUrgencyLevel("extreme")
+            .withNotes("Arrested for harrassment")
             .build();
     public static final Person ELLE = new PersonBuilder().withName("Elle Meyer")
             .withPhone("94822244")
@@ -63,6 +70,7 @@ public class TypicalPersons {
             .withAddress("michegan ave")
             .withIc("S5555555A")
             .withUrgencyLevel("high")
+            .withNotes("Cannot stand up")
             .build();
     public static final Person FIONA = new PersonBuilder().withName("Fiona Kunz")
             .withPhone("94824275")
@@ -70,6 +78,7 @@ public class TypicalPersons {
             .withAddress("little tokyo")
             .withIc("S6666666A")
             .withUrgencyLevel("moderate")
+            .withNotes("Hates walking")
             .build();
     public static final Person GEORGE = new PersonBuilder().withName("George Best")
             .withPhone("94824426")
@@ -77,6 +86,7 @@ public class TypicalPersons {
             .withAddress("4th street")
             .withIc("S7777777A")
             .withUrgencyLevel("extreme")
+            .withNotes("Handsome man")
             .build();
 
     // Manually added
@@ -103,6 +113,7 @@ public class TypicalPersons {
             .withSymptoms(VALID_SYMPTOM_FRIEND)
             .withIc(VALID_IC_AMY)
             .withUrgencyLevel(VALID_URGENCY_LEVEL_AMY)
+            .withNotes(VALID_NOTES_AMY)
             .build();
     public static final Person BOB = new PersonBuilder().withName(VALID_NAME_BOB)
             .withPhone(VALID_PHONE_BOB)
@@ -111,6 +122,7 @@ public class TypicalPersons {
             .withSymptoms(VALID_SYMPTOM_HUSBAND, VALID_SYMPTOM_FRIEND)
             .withIc(VALID_IC_BOB)
             .withUrgencyLevel(VALID_URGENCY_LEVEL_BOB)
+            .withNotes(VALID_NOTES_BOB)
             .build();
 
     public static final String KEYWORD_MATCHING_MEIER = "Meier"; // A keyword that matches MEIER

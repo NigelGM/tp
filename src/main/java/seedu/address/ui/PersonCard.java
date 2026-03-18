@@ -42,6 +42,8 @@ public class PersonCard extends UiPart<Region> {
     private Label urgencyLevel;
     @FXML
     private FlowPane symptoms;
+    @FXML
+    private Label notes;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
@@ -66,6 +68,8 @@ public class PersonCard extends UiPart<Region> {
         person.getSymptoms().stream()
                 .sorted(Comparator.comparing(symptom -> symptom.symptomName))
                 .forEach(symptom -> symptoms.getChildren().add(new Label(symptom.symptomName)));
+
+        notes.setText(person.getNotes().getValue());
     }
 
     /**

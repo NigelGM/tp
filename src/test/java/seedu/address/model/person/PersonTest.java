@@ -2,14 +2,16 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
-import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
@@ -86,6 +88,10 @@ public class PersonTest {
         // different symptoms -> returns false
         editedAlice = new PersonBuilder(ALICE).withSymptoms(VALID_SYMPTOM_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different notes -> returns false
+        editedAlice = new PersonBuilder(ALICE).withNotes(VALID_NOTES_BOB).build();
+        assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
@@ -98,7 +104,19 @@ public class PersonTest {
                 + ", symptoms=" + ALICE.getSymptoms()
                 + ", ic=" + ALICE.getIc()
                 + ", urgencyLevel=" + ALICE.getUrgencyLevel()
+                + ", notes=" + ALICE.getNotes()
                 + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void hashCode_includingDoctorName() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different doctorName -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNotes("An aspiring dentist").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
     }
 }

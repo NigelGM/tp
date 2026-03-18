@@ -9,6 +9,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -41,6 +42,7 @@ public class UpdatePersonDescriptorBuilder {
         descriptor.setSymptoms(person.getSymptoms());
         descriptor.setIc(person.getIc());
         descriptor.setUrgencyLevel(person.getUrgencyLevel());
+        descriptor.setNotes(person.getNotes());
     }
 
     /**
@@ -103,5 +105,13 @@ public class UpdatePersonDescriptorBuilder {
 
     public UpdatePersonDescriptor build() {
         return descriptor;
+    }
+
+    /**
+     * Sets the {@code Notes} of the {@code UpdatePersonDescriptor} that we are building.
+     */
+    public UpdatePersonDescriptorBuilder withNotes(String notes) {
+        descriptor.setNotes(new Notes(notes));
+        return this;
     }
 }

@@ -11,11 +11,14 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_IC_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_NOTES_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_SYMPTOM_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_URGENCY_LEVEL_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.NOTES_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.NOTES_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
@@ -35,6 +38,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_URGENCY_LEVEL_B
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
@@ -51,6 +55,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -68,7 +73,8 @@ public class AddCommandParserTest {
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + SYMPTOM_DESC_FRIEND
                 + IC_DESC_BOB
-                + URGENCY_LEVEL_DESC_BOB, new AddCommand(expectedPerson));
+                + URGENCY_LEVEL_DESC_BOB
+                + NOTES_DESC_BOB, new AddCommand(expectedPerson));
 
 
         // multiple symptoms - all accepted
@@ -83,14 +89,15 @@ public class AddCommandParserTest {
                         + SYMPTOM_DESC_HUSBAND
                         + SYMPTOM_DESC_FRIEND
                         + IC_DESC_BOB
-                        + URGENCY_LEVEL_DESC_BOB,
+                        + URGENCY_LEVEL_DESC_BOB
+                        + NOTES_DESC_BOB,
                 new AddCommand(expectedPersonMultipleSymptoms));
     }
 
     @Test
     public void parse_repeatedNonSymptomValue_failure() {
         String validExpectedPersonString = NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + SYMPTOM_DESC_FRIEND + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB;
+                + ADDRESS_DESC_BOB + SYMPTOM_DESC_FRIEND + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB;
 
         // multiple names
         assertParseFailure(parser, NAME_DESC_AMY + validExpectedPersonString,
@@ -116,6 +123,10 @@ public class AddCommandParserTest {
         assertParseFailure(parser, URGENCY_LEVEL_DESC_AMY + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_URGENCY));
 
+        // multiple notes
+        assertParseFailure(parser, NOTES_DESC_AMY + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NOTES));
+
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedPersonString
@@ -125,13 +136,15 @@ public class AddCommandParserTest {
                         + ADDRESS_DESC_AMY
                         + IC_DESC_AMY
                         + URGENCY_LEVEL_DESC_AMY
+                        + NOTES_DESC_BOB
                         + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PATIENT_NAME,
                         PREFIX_ADDRESS,
                         PREFIX_EMAIL,
                         PREFIX_PATIENT_PHONE,
                         PREFIX_IC,
-                        PREFIX_URGENCY));
+                        PREFIX_URGENCY,
+                        PREFIX_NOTES));
 
         // invalid value followed by valid value
 
@@ -158,6 +171,10 @@ public class AddCommandParserTest {
         // invalid urgencyLevel
         assertParseFailure(parser, INVALID_URGENCY_LEVEL_DESC + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_URGENCY));
+
+        // invalid notes
+        assertParseFailure(parser, INVALID_NOTES_DESC + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NOTES));
 
         // valid value followed by invalid value
 
@@ -195,7 +212,8 @@ public class AddCommandParserTest {
                         + EMAIL_DESC_AMY
                         + ADDRESS_DESC_AMY
                         + IC_DESC_AMY
-                        + URGENCY_LEVEL_DESC_AMY,
+                        + URGENCY_LEVEL_DESC_AMY
+                        + NOTES_DESC_AMY,
                 new AddCommand(expectedPerson));
     }
 
@@ -245,50 +263,56 @@ public class AddCommandParserTest {
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB,
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Name.MESSAGE_CONSTRAINTS);
 
         // invalid phone
         assertParseFailure(parser, NAME_DESC_BOB + INVALID_PHONE_DESC
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB,
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Phone.MESSAGE_CONSTRAINTS);
 
         // invalid email
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + INVALID_EMAIL_DESC + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB,
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Email.MESSAGE_CONSTRAINTS);
 
         // invalid address
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB,
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Address.MESSAGE_CONSTRAINTS);
 
         // invalid symptom
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + INVALID_SYMPTOM_DESC + VALID_SYMPTOM_FRIEND
-                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB,
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Symptom.MESSAGE_CONSTRAINTS);
 
         // invalid urgency level
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + IC_DESC_BOB + INVALID_URGENCY_LEVEL_DESC,
+                        + IC_DESC_BOB + INVALID_URGENCY_LEVEL_DESC + NOTES_DESC_BOB,
                 UrgencyLevel.MESSAGE_CONSTRAINTS);
 
         // invalid ic
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
-                        + INVALID_IC_DESC + URGENCY_LEVEL_DESC_BOB,
+                        + INVALID_IC_DESC + URGENCY_LEVEL_DESC_BOB + NOTES_DESC_BOB,
                 Ic.MESSAGE_CONSTRAINTS);
+        // invalid notes
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB
+                        + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + SYMPTOM_DESC_HUSBAND + SYMPTOM_DESC_FRIEND
+                        + IC_DESC_BOB + URGENCY_LEVEL_DESC_BOB + INVALID_NOTES_DESC,
+                Notes.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB

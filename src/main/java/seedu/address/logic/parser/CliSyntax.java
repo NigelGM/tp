@@ -13,5 +13,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_SYMPTOM = new Prefix("s/");
     public static final Prefix PREFIX_IC = new Prefix("ic/");
     public static final Prefix PREFIX_URGENCY = new Prefix("u/");
+    public static final Prefix PREFIX_NOTES = new Prefix("n/");
 
 }

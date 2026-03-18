@@ -13,6 +13,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
 import seedu.address.model.symptom.Symptom;
@@ -152,5 +153,20 @@ public class ParserUtil {
             throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
         }
         return new Ic(trimmedIc);
+    }
+
+    /**
+     * Parses a {@code String note} into a {@code Notes}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static Notes parseNotes(String notes) throws ParseException {
+        requireNonNull(notes);
+        String trimmedName = notes.trim();
+        if (!Notes.isValidNotes(trimmedName)) {
+            throw new ParseException(Notes.MESSAGE_CONSTRAINTS);
+        }
+        return new Notes(trimmedName);
     }
 }

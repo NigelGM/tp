@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -27,6 +28,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -49,7 +51,8 @@ public class UpdateCommand extends Command {
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_IC + "IC] "
             + "[" + PREFIX_URGENCY + "LEVEL] "
-            + "[" + PREFIX_SYMPTOM + "SYMPTOM]...\n"
+            + "[" + PREFIX_SYMPTOM + "SYMPTOM]"
+            + "[" + PREFIX_NOTES + "NOTES]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PATIENT_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
@@ -109,6 +112,7 @@ public class UpdateCommand extends Command {
         Ic updatedIc = updatePersonDescriptor.getIc().orElse(personToUpdate.getIc());
         UrgencyLevel updatedUrgencyLevel = updatePersonDescriptor.getUrgencyLevel()
                 .orElse(personToUpdate.getUrgencyLevel());
+        Notes updatedNotes = updatePersonDescriptor.getNotes().orElse(personToUpdate.getNotes());
 
         return new Person(updatedName,
                 updatedPhone,
@@ -116,7 +120,8 @@ public class UpdateCommand extends Command {
                 updatedAddress,
                 updatedSymptoms,
                 updatedIc,
-                updatedUrgencyLevel);
+                updatedUrgencyLevel,
+                updatedNotes);
     }
 
     @Override
@@ -154,6 +159,7 @@ public class UpdateCommand extends Command {
         private Set<Symptom> symptoms;
         private Ic ic;
         private UrgencyLevel urgencyLevel;
+        private Notes notes;
 
         public UpdatePersonDescriptor() {}
 
@@ -169,6 +175,7 @@ public class UpdateCommand extends Command {
             setSymptoms(toCopy.symptoms);
             setUrgencyLevel(toCopy.urgencyLevel);
             setIc(toCopy.ic);
+            setNotes(toCopy.notes);
         }
 
         /**
@@ -218,6 +225,14 @@ public class UpdateCommand extends Command {
             return Optional.ofNullable(ic);
         }
 
+        public void setNotes(Notes notes) {
+            this.notes = notes;
+        }
+
+        public Optional<Notes> getNotes() {
+            return Optional.ofNullable(notes);
+        }
+
         /**
          * Sets {@code symptoms} to this object's {@code symptoms}.
          * A defensive copy of {@code symptoms} is used internally.
@@ -260,7 +275,8 @@ public class UpdateCommand extends Command {
                     && Objects.equals(address, otherUpdatePersonDescriptor.address)
                     && Objects.equals(symptoms, otherUpdatePersonDescriptor.symptoms)
                     && Objects.equals(ic, otherUpdatePersonDescriptor.ic)
-                    && Objects.equals(urgencyLevel, otherUpdatePersonDescriptor.urgencyLevel);
+                    && Objects.equals(urgencyLevel, otherUpdatePersonDescriptor.urgencyLevel)
+                    && Objects.equals(notes, otherUpdatePersonDescriptor.notes);
         }
 
         @Override
@@ -273,6 +289,7 @@ public class UpdateCommand extends Command {
                     .add("symptoms", symptoms)
                     .add("ic", ic)
                     .add("urgencyLevel", urgencyLevel)
+                    .add("notes", notes)
                     .toString();
         }
     }

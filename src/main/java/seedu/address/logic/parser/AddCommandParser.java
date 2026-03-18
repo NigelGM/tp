@@ -4,6 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
@@ -18,6 +19,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
@@ -42,7 +44,8 @@ public class AddCommandParser implements Parser<AddCommand> {
                         PREFIX_ADDRESS,
                         PREFIX_SYMPTOM,
                         PREFIX_IC,
-                        PREFIX_URGENCY
+                        PREFIX_URGENCY,
+                        PREFIX_NOTES
                 );
 
         if (!arePrefixesPresent(argMultimap,
@@ -61,7 +64,8 @@ public class AddCommandParser implements Parser<AddCommand> {
                 PREFIX_EMAIL,
                 PREFIX_ADDRESS,
                 PREFIX_IC,
-                PREFIX_URGENCY);
+                PREFIX_URGENCY,
+                PREFIX_NOTES);
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_PATIENT_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PATIENT_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
@@ -69,8 +73,14 @@ public class AddCommandParser implements Parser<AddCommand> {
         Set<Symptom> symptomList = ParserUtil.parseSymptoms(argMultimap.getAllValues(PREFIX_SYMPTOM));
         Ic ic = ParserUtil.parseIc(argMultimap.getValue(PREFIX_IC).get());
         UrgencyLevel urgencyLevel = ParserUtil.parseUrgencyLevel(argMultimap.getValue(PREFIX_URGENCY).get());
+        Notes notes;
+        if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
+            notes = ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get());
+        } else {
+            notes = new Notes("");
+        }
 
-        Person person = new Person(name, phone, email, address, symptomList, ic, urgencyLevel);
+        Person person = new Person(name, phone, email, address, symptomList, ic, urgencyLevel, notes);
 
         return new AddCommand(person);
     }
