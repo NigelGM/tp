@@ -38,15 +38,15 @@ public class FindCommandParserTest {
     @Test
     public void parse_validPrefixedArgs_doesNotThrow() {
         // simple prefixed form
-        assertDoesNotThrow(() -> parser.parse(" n/Alice Bob"));
+        assertParseSuccess(parser, " pn/Alice Bob", expectedFindCommand);
 
         // prefixed form with surrounding whitespace
-        assertDoesNotThrow(() -> parser.parse(" \n n/Alice \n \t Bob  \t"));
+        assertParseSuccess(parser, " \n pn/Alice \n \t Bob  \t", expectedFindCommand);
     }
 
     @Test
     public void parse_emptyPrefixedArgs_throwsParseException() {
-        assertParseFailure(parser, " n/   ",
+        assertParseFailure(parser, " pn/   ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 

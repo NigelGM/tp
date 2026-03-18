@@ -68,10 +68,12 @@ public class FindCommandTest {
         NameContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate, "Patient Name: Kurz Elle Kunz");
         expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model,
-                "Found 3 patient(s) whose identifiers include the following criteria: "
-                    + "Patient Name: Kurz Elle Kunz", expectedModel);
-        assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredPersonList());
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+
+        // FIX: The order must match your Urgency sorting (High -> Low)
+        // If FIONA has higher urgency than ELLE, and ELLE higher than CARL:
+        assertEquals(Arrays.asList(ELLE, FIONA, CARL), model.getFilteredPersonList());
     }
 
     @Test

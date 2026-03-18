@@ -1,9 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,19 +35,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_IC, PREFIX_PHONE);
-
-        boolean hasName = argMultimap.getValue(PREFIX_NAME).isPresent();
-        boolean hasIc = argMultimap.getValue(PREFIX_IC).isPresent();
-        boolean hasPhone = argMultimap.getValue(PREFIX_PHONE).isPresent();
-
-        // Disallow duplicate prefixes.
-        if (argMultimap.getAllValues(PREFIX_NAME).size() > 1
-                || argMultimap.getAllValues(PREFIX_IC).size() > 1
-                || argMultimap.getAllValues(PREFIX_PHONE).size() > 1) {
-            throw new ParseException(
-                    "Duplicate parameter detected. Each prefix (e.g., p/, ic/) should only be used once.");
-        }
+                ArgumentTokenizer.tokenize(args, PREFIX_PATIENT_NAME);
 
         // Legacy behaviour: no prefixes, treat entire args as name keywords
         if (!hasName && !hasIc && !hasPhone) {
@@ -61,8 +47,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         Predicate<Person> predicate = person -> false;
         StringBuilder criteriaBuilder = new StringBuilder();
 
-        if (hasName) {
-            String nameArgs = argMultimap.getValue(PREFIX_NAME).get().trim();
+        if (argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent()) {
+            String nameArgs = argMultimap.getValue(PREFIX_PATIENT_NAME).get().trim();
             if (nameArgs.isEmpty()) {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
