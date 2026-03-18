@@ -84,6 +84,14 @@ public class SingleDeleteCommandTest {
     }
 
     @Test
+    public void execute_noPersons_throwsCommandException() {
+        showNoPerson(model);
+
+        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON);
+        assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForNoPersons(DeleteCommand.COMMAND_WORD));
+    }
+
+    @Test
     public void equals() {
         DeleteCommand deleteFirstCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON);
         DeleteCommand deleteSecondCommand = new SingleDeleteCommand(INDEX_SECOND_PERSON);

@@ -47,7 +47,7 @@ public class MultipleDeleteCommandTest {
     }
 
     @Test
-    public void execute_invalidIndicesUnfilteredList_throwsCommandException() {
+    public void execute_invalidIndexUnfilteredList_throwsCommandException() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, outOfBoundIndex });
 
@@ -75,7 +75,7 @@ public class MultipleDeleteCommandTest {
     }
 
     @Test
-    public void execute_invalidIndicesFilteredList_throwsCommandException() {
+    public void execute_invalidIndexFilteredList_throwsCommandException() {
         showPersonsInIndexRange(model, INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
 
         Index outOfBoundIndex = INDEX_THIRD_PERSON;
@@ -86,6 +86,32 @@ public class MultipleDeleteCommandTest {
 
         Index lastIndex = Index.fromOneBased(model.getFilteredPersonList().size());
         assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForInvalidIndices(lastIndex));
+    }
+
+    @Test
+    public void execute_duplicateIndicesUnfilteredList_throwsCommandException() {
+        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_FIRST_PERSON });
+
+        assertCommandFailure(deleteCommand, model,
+                Messages.getErrorMessageForDuplicateIndices(Set.of(INDEX_FIRST_PERSON)));
+    }
+
+    @Test
+    public void execute_duplicateIndicesFilteredList_throwsCommandException() {
+        showPersonsInIndexRange(model, INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+
+        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_FIRST_PERSON });
+
+        assertCommandFailure(deleteCommand, model,
+                Messages.getErrorMessageForDuplicateIndices(Set.of(INDEX_FIRST_PERSON)));
+    }
+
+    @Test
+    public void execute_noPersons_throwsCommandException() {
+        showNoPerson(model);
+
+        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON });
+        assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForNoPersons(DeleteCommand.COMMAND_WORD));
     }
 
     @Test

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonsInIndexRange;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -50,21 +51,7 @@ public class RangeDeleteCommandTest {
     }
 
     @Test
-    public void execute_validIndicesSameIndexUnfilteredList_success() {
-        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON);
-
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                "\n" + Messages.format(personToDelete));
-
-        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.deletePerson(personToDelete);
-
-        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_invalidIndicesUnfilteredList_throwsCommandException() {
+    public void execute_invalidIndexUnfilteredList_throwsCommandException() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, outOfBoundIndex);
 
@@ -95,7 +82,7 @@ public class RangeDeleteCommandTest {
     }
 
     @Test
-    public void execute_invalidIndicesFilteredList_throwsCommandException() {
+    public void execute_invalidIndexFilteredList_throwsCommandException() {
         showPersonsInIndexRange(model, INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
 
         Index outOfBoundIndex = INDEX_THIRD_PERSON;
@@ -106,6 +93,61 @@ public class RangeDeleteCommandTest {
 
         Index lastIndex = Index.fromOneBased(model.getFilteredPersonList().size());
         assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForInvalidIndices(lastIndex));
+    }
+
+    @Test
+    public void execute_startIndexEqualsEndIndexUnfilteredList_success() {
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                "\n" + Messages.format(personToDelete));
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_startIndexEqualsEndIndexFilteredList_success() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                "\n" + Messages.format(personToDelete));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+        showNoPerson(expectedModel);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_startIndexGreaterThanEndIndexUnfilteredList_throwsCommandException() {
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_SECOND_PERSON, INDEX_FIRST_PERSON);
+
+        assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForInvalidRangeIndices());
+    }
+
+    @Test
+    public void execute_startIndexGreaterThanEndIndexFilteredList_throwsCommandException() {
+        showPersonsInIndexRange(model, INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_SECOND_PERSON, INDEX_FIRST_PERSON);
+
+        assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForInvalidRangeIndices());
+    }
+
+    @Test
+    public void execute_noPersons_throwsCommandException() {
+        showNoPerson(model);
+
+        DeleteCommand deleteCommand = new RangeDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+        assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForNoPersons(DeleteCommand.COMMAND_WORD));
     }
 
     @Test
