@@ -1,7 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.getErrorMessageForDuplicateIndices;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +38,8 @@ public class MultipleDeleteCommand extends DeleteCommand {
             throw new CommandException(Messages.getErrorMessageForNoPersons(COMMAND_WORD));
         }
 
+        verifyNoDuplicateIndices();
+
         Person[] personsToDelete = new Person[targetIndices.length];
         for (int i = 0; i < targetIndices.length; i++) {
             Index targetIndex = targetIndices[i];
@@ -54,6 +58,20 @@ public class MultipleDeleteCommand extends DeleteCommand {
             deletedPersonsString.append("\n" + Messages.format(person));
         }
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, deletedPersonsString));
+    }
+
+    private void verifyNoDuplicateIndices() throws CommandException {
+        Set<Index> seenIndices = new HashSet<>();
+        Set<Index> duplicateIndices = new HashSet<>();
+        for (Index index : targetIndices) {
+            if (!seenIndices.add(index)) {
+                duplicateIndices.add(index);
+            }
+        }
+
+        if (!duplicateIndices.isEmpty()) {
+            throw new CommandException(getErrorMessageForDuplicateIndices(duplicateIndices));
+        }
     }
 
     @Override
