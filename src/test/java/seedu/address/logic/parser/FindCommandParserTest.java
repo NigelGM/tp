@@ -2,6 +2,10 @@ package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -16,19 +20,22 @@ public class FindCommandParserTest {
 
     private FindCommandParser parser = new FindCommandParser();
 
+    private FindCommand getExpectedNameFindCommand() {
+        return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")),
+                "Patient Name: Alice Bob");
+    }
+
     @Test
     public void parse_emptyArg_throwsParseException() {
         assertParseFailure(parser, "     ",
                 "At least one parameter to search with must be provided. You can use the command 'find'"
-                    + " with the following parameters: n/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
+                    + " with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
     }
 
     @Test
     public void parse_validArgs_returnsFindCommand() {
         // no leading and trailing whitespaces
-        FindCommand expectedFindCommand =
-                new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")),
-                        "Patient Name: Alice Bob");
+        FindCommand expectedFindCommand = getExpectedNameFindCommand();
         assertParseSuccess(parser, "Alice Bob", expectedFindCommand);
 
         // multiple whitespaces between keywords
@@ -37,6 +44,8 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_validPrefixedArgs_doesNotThrow() {
+        FindCommand expectedFindCommand = getExpectedNameFindCommand();
+
         // simple prefixed form
         assertParseSuccess(parser, " pn/Alice Bob", expectedFindCommand);
 
@@ -76,23 +85,23 @@ public class FindCommandParserTest {
     public void parse_noFieldsProvided_throwsParseException() {
         assertParseFailure(parser, "",
                 "At least one parameter to search with must be provided. You can use the command 'find'"
-                    + " with the following parameters: n/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
+                    + " with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
     }
 
     @Test
     public void parse_duplicatePrefixes_throwsParseException() {
-        assertParseFailure(parser, " n/Alice n/Bob",
-                "Duplicate parameter detected. Each prefix (e.g., p/, ic/) should only be used once.");
+        assertParseFailure(parser, " pn/Alice pn/Bob",
+                getErrorMessageForDuplicatePrefixes(PREFIX_PATIENT_NAME));
         assertParseFailure(parser, " ic/S1234567A ic/S7654321B",
-                "Duplicate parameter detected. Each prefix (e.g., p/, ic/) should only be used once.");
+                getErrorMessageForDuplicatePrefixes(PREFIX_IC));
         assertParseFailure(parser, " p/91234567 p/98765432",
-                "Duplicate parameter detected. Each prefix (e.g., p/, ic/) should only be used once.");
+                getErrorMessageForDuplicatePrefixes(PREFIX_PATIENT_PHONE));
     }
 
     @Test
     public void parse_multiplePrefixes_doesNotThrow() {
         // name + ic + phone together to test comma joining output.
-        assertDoesNotThrow(() -> parser.parse(" n/Alice ic/S1234567A p/91234567"));
+        assertDoesNotThrow(() -> parser.parse(" pn/Alice ic/S1234567A p/91234567"));
     }
 
 }

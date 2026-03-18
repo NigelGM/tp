@@ -19,12 +19,12 @@ public class FindCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all patients whose details match any of "
             + "the specified search parameters (case-insensitive) and displays them as a list.\n"
             + "Parameters:\n"
-            + "  n/NAME...\n"
+            + "  pn/NAME...\n"
             + "  ic/IC_NUMBER\n"
             + "  p/PHONE_NUMBER\n"
             + "You can specify one or more of the above. At least one must be provided.\n"
             + "Examples:\n"
-            + "  " + COMMAND_WORD + " n/Alice Bob\n"
+            + "  " + COMMAND_WORD + " pn/Alice Bob\n"
             + "  " + COMMAND_WORD + " ic/S1234567A\n"
             + "  " + COMMAND_WORD + " p/91234567";
 

@@ -1,7 +1,9 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +33,17 @@ public class FindCommandParser implements Parser<FindCommand> {
         // No text at all or only whitespace after the command word
         if (trimmedArgs.isEmpty()) {
             throw new ParseException("At least one parameter to search with must be provided. You "
-                + "can use the command 'find' with the following parameters: n/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
+                + "can use the command 'find' with the following parameters: pn/NAME, ic/IC_NUMBER, p/PHONE_NUMBER");
         }
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_PATIENT_NAME);
+                ArgumentTokenizer.tokenize(args, PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME, PREFIX_IC, PREFIX_PATIENT_PHONE);
+
+        boolean hasName = argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent();
+        boolean hasIc = argMultimap.getValue(PREFIX_IC).isPresent();
+        boolean hasPhone = argMultimap.getValue(PREFIX_PATIENT_PHONE).isPresent();
 
         // Legacy behaviour: no prefixes, treat entire args as name keywords
         if (!hasName && !hasIc && !hasPhone) {
@@ -44,7 +52,7 @@ public class FindCommandParser implements Parser<FindCommand> {
             return new FindCommand(new NameContainsKeywordsPredicate(legacyKeywords), criteriaDescription);
         }
 
-        Predicate<Person> predicate = person -> false;
+        Predicate<Person> predicate = null;
         StringBuilder criteriaBuilder = new StringBuilder();
 
         if (argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent()) {
@@ -54,7 +62,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
-            predicate = predicate.or(new NameContainsKeywordsPredicate(nameKeywords));
+            Predicate<Person> namePredicate = new NameContainsKeywordsPredicate(nameKeywords);
+            predicate = predicate == null ? namePredicate : predicate.or(namePredicate);
             criteriaBuilder.append("Patient Name: ").append(nameArgs);
         }
 
@@ -65,7 +74,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             String icToMatch = icArg;
-            predicate = predicate.or(person -> person.getIc().value.equalsIgnoreCase(icToMatch));
+            Predicate<Person> icPredicate = person -> person.getIc().value.equalsIgnoreCase(icToMatch);
+            predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
             if (criteriaBuilder.length() > 0) {
                 criteriaBuilder.append(", ");
             }
@@ -73,13 +83,14 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         if (hasPhone) {
-            String phoneArg = argMultimap.getValue(PREFIX_PHONE).get().trim();
+            String phoneArg = argMultimap.getValue(PREFIX_PATIENT_PHONE).get().trim();
             if (phoneArg.isEmpty()) {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             String phoneToMatch = phoneArg;
-            predicate = predicate.or(person -> person.getPhone().value.equals(phoneToMatch));
+            Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);
+            predicate = predicate == null ? phonePredicate : predicate.or(phonePredicate);
             if (criteriaBuilder.length() > 0) {
                 criteriaBuilder.append(", ");
             }
@@ -87,6 +98,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         String criteriaDescription = criteriaBuilder.toString().trim();
+        assert predicate != null;
         return new FindCommand(predicate, criteriaDescription);
     }
 

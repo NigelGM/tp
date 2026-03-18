@@ -69,6 +69,8 @@ public class FindCommandTest {
         FindCommand command = new FindCommand(predicate, "Patient Name: Kurz Elle Kunz");
         expectedModel.updateFilteredPersonList(predicate);
 
+        String expectedMessage = "Found 3 patient(s) whose identifiers include the following criteria: "
+                + "Patient Name: Kurz Elle Kunz";
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
 
         // FIX: The order must match your Urgency sorting (High -> Low)
