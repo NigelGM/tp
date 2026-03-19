@@ -15,6 +15,7 @@ import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -37,17 +38,22 @@ class JsonAdaptedPerson {
     private final String urgencyLevel;
     private final String nextOfKinPhone;
     private final String doctorName;
+    private final String nextOfKin;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedSymptom> tags, @JsonProperty("ic") String ic,
-            @JsonProperty("urgencyLevel") String urgencyLevel,
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+                             @JsonProperty("phone") String phone,
+                             @JsonProperty("email") String email,
+                             @JsonProperty("address") String address,
+                             @JsonProperty("tags") List<JsonAdaptedSymptom> symptoms,
+                             @JsonProperty("ic") String ic,
+                             @JsonProperty("urgencyLevel") String urgencyLevel,
                              @JsonProperty("doctorName") String doctorName,
-                             @JsonProperty("nextOfKinPhone") String nextOfKinPhone) {
+                             @JsonProperty("nextOfKinPhone") String nextOfKinPhone,
+                             @JsonProperty("nextOfKin") String nextOfKin) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -59,6 +65,7 @@ class JsonAdaptedPerson {
         this.urgencyLevel = urgencyLevel;
         this.nextOfKinPhone = nextOfKinPhone;
         this.doctorName = doctorName;
+        this.nextOfKin = nextOfKin;
     }
 
     /**
@@ -76,6 +83,7 @@ class JsonAdaptedPerson {
         urgencyLevel = source.getUrgencyLevel().toString();
         nextOfKinPhone = source.getNextOfKinPhone().toString();
         doctorName = source.getDoctorName().toString();
+        nextOfKin = source.getNextOfKin().toString();
     }
 
     /**
@@ -138,6 +146,15 @@ class JsonAdaptedPerson {
         }
         final UrgencyLevel modelUrgencyLevel = new UrgencyLevel(urgencyLevel);
 
+        if (nextOfKin == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    NextOfKin.class.getSimpleName()));
+        }
+        if (!NextOfKin.isValidNextOfKin(nextOfKin)) {
+            throw new IllegalValueException(NextOfKin.MESSAGE_CONSTRAINTS);
+        }
+        final NextOfKin modelNextOfKin = new NextOfKin(nextOfKin);
+
         if (nextOfKinPhone == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     NextOfKinPhone.class.getSimpleName()));
@@ -146,6 +163,7 @@ class JsonAdaptedPerson {
             throw new IllegalValueException(NextOfKinPhone.MESSAGE_CONSTRAINTS);
         }
         final NextOfKinPhone modelNextOfKinPhone = new NextOfKinPhone(nextOfKinPhone);
+
         if (doctorName == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     DoctorName.class.getSimpleName()));
@@ -157,7 +175,7 @@ class JsonAdaptedPerson {
 
         final Set<Symptom> modelSymptoms = new HashSet<>(personSymptoms);
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSymptoms, modelIc, modelUrgencyLevel,
-                modelNextOfKinPhone, modelDoctorName);
+                modelNextOfKinPhone, modelDoctorName, modelNextOfKin);
     }
 
 }

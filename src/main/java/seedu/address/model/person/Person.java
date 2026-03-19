@@ -28,6 +28,7 @@ public class Person {
     private final UrgencyLevel urgencyLevel;
     private final NextOfKinPhone nextOfKinPhone;
     private final DoctorName doctorName;
+    private final NextOfKin nextOfKin;
 
     /**
      * Every field must be present and not null.
@@ -40,8 +41,11 @@ public class Person {
                   Ic ic,
                   UrgencyLevel urgencyLevel,
                   NextOfKinPhone nextOfKinPhone,
-                  DoctorName doctorName) {
-        requireAllNonNull(name, phone, email, address, symptoms, ic, urgencyLevel, doctorName, nextOfKinPhone);
+                  DoctorName doctorName,
+                  NextOfKin nextOfKin) {
+        requireAllNonNull(name, phone, email, address, symptoms, ic,
+                urgencyLevel, doctorName, nextOfKinPhone, nextOfKin);
+
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -51,6 +55,7 @@ public class Person {
         this.urgencyLevel = urgencyLevel;
         this.nextOfKinPhone = nextOfKinPhone;
         this.doctorName = doctorName;
+        this.nextOfKin = nextOfKin;
     }
 
     public Name getName() {
@@ -93,6 +98,10 @@ public class Person {
         return doctorName;
     }
 
+    public NextOfKin getNextOfKin() {
+        return nextOfKin;
+    }
+
     /**
      * Returns true if both persons have the same ic.
      * This defines a weaker notion of equality between two persons.
@@ -130,13 +139,15 @@ public class Person {
                 && ic.equals(otherPerson.ic)
                 && urgencyLevel.equals(otherPerson.urgencyLevel)
                 && nextOfKinPhone.equals(otherPerson.nextOfKinPhone)
-                && doctorName.equals(otherPerson.doctorName);
+                && doctorName.equals(otherPerson.doctorName)
+                && nextOfKin.equals(otherPerson.nextOfKin);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, symptoms, ic, urgencyLevel, doctorName, nextOfKinPhone);
+        return Objects.hash(name, phone, email, address, symptoms,
+                ic, urgencyLevel, doctorName, nextOfKinPhone, nextOfKin);
     }
 
     @Override
@@ -151,6 +162,7 @@ public class Person {
                 .add("urgencyLevel", urgencyLevel)
                 .add("nextOfKinPhone", nextOfKinPhone)
                 .add("doctorName", doctorName)
+                .add("nextOfKin", nextOfKin)
                 .toString();
     }
 

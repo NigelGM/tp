@@ -46,6 +46,8 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane symptoms;
     @FXML
     private Label doctorName;
+    @FXML
+    private Label nextOfKin;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
@@ -62,6 +64,7 @@ public class PersonCard extends UiPart<Region> {
         email.setText(person.getEmail().value);
         nextOfKinPhone.setText(person.getNextOfKinPhone().toString());
         doctorName.setText(person.getDoctorName().toString());
+        nextOfKin.setText(person.getNextOfKin().toString());
 
         // Map the new medical fields to the UI
         ic.setText("NRIC: " + person.getIc().value);

@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -33,6 +34,7 @@ public class AddCommand extends Command {
             + PREFIX_DOCTOR + "DOCTOR "
             + PREFIX_IC + "IC "
             + PREFIX_URGENCY + "LEVEL"
+            + PREFIX_NEXT_OF_KIN + "NEXT-OF-KIN "
             + PREFIX_NEXT_OF_KIN_PHONE + "N-O-K PHONE "
             + "[" + PREFIX_SYMPTOM + "SYMPTOM]...\n"
             + "Example: " + COMMAND_WORD + " "
@@ -42,6 +44,7 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
             + PREFIX_IC + "S1234567A "
             + PREFIX_URGENCY + "high "
+            + PREFIX_NEXT_OF_KIN + "John "
             + PREFIX_NEXT_OF_KIN_PHONE + "91234567 "
             + PREFIX_DOCTOR + "Dr Sally "
             + PREFIX_SYMPTOM + "friends "

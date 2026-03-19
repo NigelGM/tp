@@ -8,6 +8,7 @@ import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.NextOfKin;
 import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -28,6 +29,7 @@ public class PersonBuilder {
     public static final String DEFAULT_URGENCY_LEVEL = "low";
     public static final String DEFAULT_NEXT_OF_KIN_PHONE = "81234567";
     public static final String DEFAULT_DOCTOR_NAME = "Seuss";
+    public static final String DEFAULT_NEXT_OF_KIN = "Ms Jane";
 
     private Name name;
     private Phone phone;
@@ -38,6 +40,7 @@ public class PersonBuilder {
     private UrgencyLevel urgencyLevel;
     private NextOfKinPhone nextOfKinPhone;
     private DoctorName doctorName;
+    private NextOfKin nextOfKin;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -52,6 +55,7 @@ public class PersonBuilder {
         urgencyLevel = new UrgencyLevel(DEFAULT_URGENCY_LEVEL);
         nextOfKinPhone = new NextOfKinPhone(DEFAULT_NEXT_OF_KIN_PHONE);
         doctorName = new DoctorName(DEFAULT_DOCTOR_NAME);
+        nextOfKin = new NextOfKin(DEFAULT_NEXT_OF_KIN);
     }
 
     /**
@@ -67,6 +71,7 @@ public class PersonBuilder {
         urgencyLevel = personToCopy.getUrgencyLevel();
         nextOfKinPhone = personToCopy.getNextOfKinPhone();
         doctorName = personToCopy.getDoctorName();
+        nextOfKin = personToCopy.getNextOfKin();
     }
 
     /**
@@ -141,7 +146,19 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code NextOfKin} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withNextOfKin(String nextOfKin) {
+        this.nextOfKin = new NextOfKin(nextOfKin);
+        return this;
+    }
+
+    /**
+     * Builds and returns the {@code Person} object that we are building.
+     */
     public Person build() {
-        return new Person(name, phone, email, address, symptoms, ic, urgencyLevel, nextOfKinPhone, doctorName);
+        return new Person(name, phone, email, address, symptoms, ic, urgencyLevel,
+                nextOfKinPhone, doctorName, nextOfKin);
     }
 }

@@ -12,7 +12,6 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NEXT_OF_KIN_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
-import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
@@ -106,6 +105,7 @@ public class PersonTest {
                 + ", urgencyLevel=" + ALICE.getUrgencyLevel()
                 + ", nextOfKinPhone=" + ALICE.getNextOfKinPhone()
                 + ", doctorName=" + ALICE.getDoctorName()
+                + ", nextOfKin=" + ALICE.getNextOfKin()
                 + "}";
         assertEquals(expected, ALICE.toString());
     }
@@ -129,6 +129,17 @@ public class PersonTest {
 
         // different doctorName -> different hashCode
         Person editedAlice = new PersonBuilder(ALICE).withDoctorName("Dr. John Doe").build();
+        assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
+    }
+
+    @Test
+    public void hashCode_includingNameOfKin() {
+        // same values -> equal hashCode
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
+
+        // different NameOfKin -> different hashCode
+        Person editedAlice = new PersonBuilder(ALICE).withNextOfKin("John Doe").build();
         assertNotEquals(ALICE.hashCode(), editedAlice.hashCode());
     }
 }

@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -45,7 +46,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                         PREFIX_IC,
                         PREFIX_URGENCY,
                         PREFIX_NEXT_OF_KIN_PHONE,
-                        PREFIX_DOCTOR
+                        PREFIX_DOCTOR,
+                        PREFIX_NEXT_OF_KIN
                 );
 
         Index index;
@@ -63,8 +65,8 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
                 PREFIX_IC,
                 PREFIX_URGENCY,
                 PREFIX_NEXT_OF_KIN_PHONE,
-                PREFIX_DOCTOR
-        );
+                PREFIX_DOCTOR,
+                PREFIX_NEXT_OF_KIN);
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
@@ -92,10 +94,18 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
             updatePersonDescriptor.setNextOfKinPhone(ParserUtil
                     .parseNextOfKinPhone(argMultimap.getValue(PREFIX_NEXT_OF_KIN_PHONE).get()));
         }
+
         if (argMultimap.getValue(PREFIX_DOCTOR).isPresent()) {
             updatePersonDescriptor.setDoctorName(ParserUtil.parseDoctorName(argMultimap.getValue(PREFIX_DOCTOR).get()));
         }
+
+        if (argMultimap.getValue(PREFIX_NEXT_OF_KIN).isPresent()) {
+            updatePersonDescriptor.setNextOfKin(ParserUtil.parseNextOfKin(argMultimap.getValue(PREFIX_NEXT_OF_KIN)
+                    .get()));
+        }
+
         parseSymptomsForEdit(argMultimap.getAllValues(PREFIX_SYMPTOM)).ifPresent(updatePersonDescriptor::setSymptoms);
+
 
         if (!updatePersonDescriptor.isAnyFieldEdited()) {
             throw new ParseException(UpdateCommand.MESSAGE_NOT_UPDATED);
