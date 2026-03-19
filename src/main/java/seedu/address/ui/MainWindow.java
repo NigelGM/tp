@@ -178,6 +178,7 @@ public class MainWindow extends UiPart<Stage> {
         try {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
+            resultDisplay.setStyle("success");
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 
             if (commandResult.isShowHelp()) {
@@ -185,18 +186,14 @@ public class MainWindow extends UiPart<Stage> {
             }
 
             if (commandResult.isExit()) {
-                resultDisplay.setExitMessage(commandResult.getFeedbackToUser());
                 delayExit();
             }
 
             return commandResult;
         } catch (CommandException | ParseException e) {
-            if (commandText.trim().startsWith("exit")) {
-                resultDisplay.setExitErrorMessage(e.getMessage());
-            } else {
-                logger.info("An error occurred while executing command: " + commandText);
-                resultDisplay.setFeedbackToUser(e.getMessage());
-            }
+            logger.info("An error occurred while executing command: " + commandText);
+            resultDisplay.setStyle("exception");
+            resultDisplay.setFeedbackToUser(e.getMessage());
             throw e;
         }
     }
