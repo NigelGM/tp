@@ -6,14 +6,16 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.UpdateCommand.UpdatePersonDescriptor;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Ic;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NextOfKin;
+import seedu.address.model.person.NextOfKinPhone;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.UrgencyLevel;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.symptom.Symptom;
 
 /**
  * A utility class to help with building UpdatePersonDescriptor objects.
@@ -39,9 +41,11 @@ public class UpdatePersonDescriptorBuilder {
         descriptor.setPhone(person.getPhone());
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
-        descriptor.setTags(person.getTags());
+        descriptor.setSymptoms(person.getSymptoms());
         descriptor.setIc(person.getIc());
         descriptor.setUrgencyLevel(person.getUrgencyLevel());
+        descriptor.setNextOfKinPhone(person.getNextOfKinPhone());
+        descriptor.setDoctorName(person.getDoctorName());
         descriptor.setNextOfKin(person.getNextOfKin());
     }
 
@@ -86,12 +90,12 @@ public class UpdatePersonDescriptorBuilder {
     }
 
     /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code UpdatePersonDescriptor}
+     * Parses the {@code symptoms} into a {@code Set<Symptom>} and set it to the {@code UpdatePersonDescriptor}
      * that we are building.
      */
-    public UpdatePersonDescriptorBuilder withTags(String... tags) {
-        Set<Tag> tagSet = Stream.of(tags).map(Tag::new).collect(Collectors.toSet());
-        descriptor.setTags(tagSet);
+    public UpdatePersonDescriptorBuilder withSymptoms(String... symptoms) {
+        Set<Symptom> symptomSet = Stream.of(symptoms).map(Symptom::new).collect(Collectors.toSet());
+        descriptor.setSymptoms(symptomSet);
         return this;
     }
 
@@ -111,8 +115,24 @@ public class UpdatePersonDescriptorBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code NextOfKinPhone} of the {@code UpdatePersonDescriptor} that we are building.
+     */
+    public UpdatePersonDescriptorBuilder withNextOfKinPhone(String phone) {
+        descriptor.setNextOfKinPhone(new NextOfKinPhone(phone));
+        return this;
+    }
+
     public UpdatePersonDescriptor build() {
         return descriptor;
+    }
+
+    /**
+     * Sets the {@code DoctorName} of the {@code UpdatePersonDescriptor} that we are building.
+     */
+    public UpdatePersonDescriptorBuilder withDoctorName(String doctorName) {
+        descriptor.setDoctorName(new DoctorName(doctorName));
+        return this;
     }
 
 }

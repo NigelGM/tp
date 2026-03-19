@@ -41,7 +41,11 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label urgencyLevel;
     @FXML
-    private FlowPane tags;
+    private Label nextOfKinPhone;
+    @FXML
+    private FlowPane symptoms;
+    @FXML
+    private Label doctorName;
     @FXML
     private Label nextOfKin;
 
@@ -58,6 +62,8 @@ public class PersonCard extends UiPart<Region> {
         phone.setText("Hp: " + person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+        nextOfKinPhone.setText(person.getNextOfKinPhone().toString());
+        doctorName.setText(person.getDoctorName().toString());
         nextOfKin.setText(person.getNextOfKin().toString());
 
         // Map the new medical fields to the UI
@@ -66,9 +72,9 @@ public class PersonCard extends UiPart<Region> {
         // Clinical Details: Apply styling using the refactored method
         setUrgencyStyle(person.getUrgencyLevel().getStyleClass(), person.getUrgencyLevel().toString());
 
-        person.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        person.getSymptoms().stream()
+                .sorted(Comparator.comparing(symptom -> symptom.symptomName))
+                .forEach(symptom -> symptoms.getChildren().add(new Label(symptom.symptomName)));
     }
 
     /**
