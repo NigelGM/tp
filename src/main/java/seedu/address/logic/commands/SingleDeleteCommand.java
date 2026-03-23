@@ -24,6 +24,16 @@ public class SingleDeleteCommand extends DeleteCommand {
 
     private final Index targetIndex;
 
+    public SingleDeleteCommand(Index targetIndex) {
+        this(targetIndex, Set.of());
+    }
+
+    /**
+     * Creates a SingleDeleteCommand to delete the specified person.
+     *
+     * @param targetIndex The index of the person to delete.
+     * @param prefixes The prefixes indicating which fields to delete (if any).
+     */
     public SingleDeleteCommand(Index targetIndex, Set<Prefix> prefixes) {
         super(prefixes);
         this.targetIndex = targetIndex;
@@ -45,7 +55,7 @@ public class SingleDeleteCommand extends DeleteCommand {
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
 
-        if (!prefixes.isEmpty()) {
+        if (!getPrefixes().isEmpty()) {
             Person updatedPerson = getUpdatedPerson(personToDelete);
             model.setPerson(personToDelete, updatedPerson);
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(updatedPerson)));

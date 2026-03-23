@@ -175,7 +175,8 @@ public class RangeDeleteCommandTest {
         assertFalse(deleteFirstCommand.equals(deleteSecondCommand));
 
         // different target indices and different command type -> returns false
-        DeleteCommand deleteMultipleCommand = new MultipleDeleteCommand(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON);
+        DeleteCommand deleteMultipleCommand =
+                new MultipleDeleteCommand(new Index[]{ INDEX_FIRST_PERSON, INDEX_THIRD_PERSON });
         assertFalse(deleteFirstCommand.equals(deleteMultipleCommand));
     }
 

@@ -26,6 +26,16 @@ public class MultipleDeleteCommand extends DeleteCommand {
 
     private final Index[] targetIndices;
 
+    public MultipleDeleteCommand(Index[] targetIndices) {
+        this(targetIndices, Set.of());
+    }
+
+    /**
+     * Creates a MultipleDeleteCommand to delete the specified people.
+     *
+     * @param targetIndices The indices of the people to delete.
+     * @param prefixes The prefixes indicating which fields to delete (if any).
+     */
     public MultipleDeleteCommand(Index[] targetIndices, Set<Prefix> prefixes) {
         super(prefixes);
         this.targetIndices = targetIndices;
@@ -45,7 +55,7 @@ public class MultipleDeleteCommand extends DeleteCommand {
         Person[] personsToDelete = getPersonsToDelete(model, lastShownList);
         StringBuilder deletedPersonsString = new StringBuilder();
 
-        if (!prefixes.isEmpty()) {
+        if (!getPrefixes().isEmpty()) {
             for (Person person : personsToDelete) {
                 Person updatedPerson = getUpdatedPerson(person);
                 model.setPerson(person, updatedPerson);

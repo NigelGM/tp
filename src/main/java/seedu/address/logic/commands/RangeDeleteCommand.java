@@ -25,11 +25,16 @@ public class RangeDeleteCommand extends DeleteCommand {
     private final Index startIndex;
     private final Index endIndex;
 
+    public RangeDeleteCommand(Index startIndex, Index endIndex) {
+        this(startIndex, endIndex, Set.of());
+    }
+
     /**
-     * Creates a RangeDeleteCommand to delete the specified range of people.
+     * Creates a RangeDeleteCommand to delete the specified people.
      *
-     * @param startIndex The starting index of the range (inclusive).
-     * @param endIndex The ending index of the range (inclusive).
+     * @param startIndex The starting index of the range of people to delete.
+     * @param endIndex The ending index of the range of people to delete.
+     * @param prefixes The prefixes indicating which fields to delete (if any).
      */
     public RangeDeleteCommand(Index startIndex, Index endIndex, Set<Prefix> prefixes) {
         super(prefixes);
@@ -51,7 +56,7 @@ public class RangeDeleteCommand extends DeleteCommand {
         Person[] personsToDelete = getPersonsToDelete(model, lastShownList);
         StringBuilder deletedPersonsString = new StringBuilder();
 
-        if (!prefixes.isEmpty()) {
+        if (!getPrefixes().isEmpty()) {
             for (Person person : personsToDelete) {
                 Person updatedPerson = getUpdatedPerson(person);
                 model.setPerson(person, updatedPerson);

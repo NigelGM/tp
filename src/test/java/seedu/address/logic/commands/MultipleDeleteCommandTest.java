@@ -146,7 +146,7 @@ public class MultipleDeleteCommandTest {
     @Test
     public void toStringMethod() {
         Index targetIndex = Index.fromOneBased(1);
-        DeleteCommand deleteCommand = new MultipleDeleteCommand(targetIndex);
+        DeleteCommand deleteCommand = new MultipleDeleteCommand(new Index[]{ targetIndex });
         String expected = MultipleDeleteCommand.class.getCanonicalName()
                 + "{targetIndices=" + Set.of(targetIndex) + "}";
         assertEquals(expected, deleteCommand.toString());

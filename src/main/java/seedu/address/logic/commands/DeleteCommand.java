@@ -34,10 +34,14 @@ public abstract class DeleteCommand extends Command {
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person(s): %1$s";
     public static final String MESSAGE_DELETE_FIELD_SUCCESS = "Deleted field(s) for Person(s): %1$s";
 
-    public Set<Prefix> prefixes;
+    private Set<Prefix> prefixes;
 
     public DeleteCommand(Set<Prefix> prefixes) {
         this.prefixes = prefixes;
+    }
+
+    public Set<Prefix> getPrefixes() {
+        return prefixes;
     }
 
     public abstract Set<Index> getTargetIndicesAsSet();
