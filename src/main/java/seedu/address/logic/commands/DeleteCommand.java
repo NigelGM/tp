@@ -30,9 +30,15 @@ public abstract class DeleteCommand extends Command {
             + "        Single deletion: " + COMMAND_WORD + " INDEX\n"
             + "        Multiple deletion: " + COMMAND_WORD + " INDEX,INDEX[,INDEX,...]\n"
             + "        Range deletion: " + COMMAND_WORD + " START_INDEX-END_INDEX";
+    public static final String MESSAGE_DELETE_FIELD_USAGE = COMMAND_WORD
+            + ": Deletes specific fields of the person(s) specified.\n"
+            + "Parameters: INDEX(ES) PREFIX [PREFIX ...] (must be optional fields)\n"
+            + "Example: " + COMMAND_WORD + " 1,3,5 " + CliSyntax.PREFIX_SYMPTOM + " " + CliSyntax.PREFIX_NOTES;
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person(s): %1$s";
     public static final String MESSAGE_DELETE_FIELD_SUCCESS = "Deleted field(s) for Person(s): %1$s";
+    public static final String MESSAGE_DUPLICATE_PREFIXES =
+            "Duplicate prefixes are not allowed. Each prefix should only be specified once.";
 
     private Set<Prefix> prefixes;
 

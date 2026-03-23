@@ -57,6 +57,8 @@ public class SingleDeleteCommand extends DeleteCommand {
 
         if (!getPrefixes().isEmpty()) {
             Person updatedPerson = getUpdatedPerson(personToDelete);
+            assert updatedPerson.isSamePerson(personToDelete)
+                    : "Updated person should be have the same identity as original person.";
             model.setPerson(personToDelete, updatedPerson);
             return new CommandResult(String.format(MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(updatedPerson)));
         }

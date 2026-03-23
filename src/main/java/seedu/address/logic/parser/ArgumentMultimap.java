@@ -73,6 +73,14 @@ public class ArgumentMultimap {
     }
 
     /**
+     * Returns true if any of the prefixes contains at least one argument value.
+     */
+    public boolean areAnyPrefixesPresent(Prefix... prefixes) {
+        return Stream.of(prefixes)
+                .anyMatch(prefix -> argMultimap.containsKey(prefix) && !argMultimap.get(prefix).isEmpty());
+    }
+
+    /**
      * Throws a {@code ParseException} if any of the prefixes given in {@code prefixes} appeared more than
      * once among the arguments.
      */
