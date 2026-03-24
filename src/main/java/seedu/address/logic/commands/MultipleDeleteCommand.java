@@ -56,10 +56,10 @@ public class MultipleDeleteCommand extends DeleteCommand {
         StringBuilder deletedPersonsString = new StringBuilder();
 
         if (!getPrefixes().isEmpty()) {
-            for (Person person : personsToDelete) {
-                Person updatedPerson = getUpdatedPerson(person);
-                assert updatedPerson.isSamePerson(person)
-                        : "Updated person should be have the same identity as original person.";
+            Person[] updatedPersons = getUpdatedPersons(personsToDelete);
+            for (int i = 0; i < personsToDelete.length; i++) {
+                Person person = personsToDelete[i];
+                Person updatedPerson = updatedPersons[i];
                 model.setPerson(person, updatedPerson);
                 deletedPersonsString.append("\n" + Messages.format(updatedPerson));
             }

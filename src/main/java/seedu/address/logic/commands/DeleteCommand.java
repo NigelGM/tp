@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
 
@@ -8,7 +9,6 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.logic.parser.CliSyntax;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DoctorName;
@@ -37,7 +37,7 @@ public abstract class DeleteCommand extends Command {
     public static final String MESSAGE_DELETE_FIELD_USAGE = COMMAND_WORD
             + ": Deletes specific fields of the person(s) specified.\n"
             + "Parameters: INDEX(ES) PREFIX [PREFIX ...] (must be optional fields)\n"
-            + "Example: " + COMMAND_WORD + " 1,3,5 " + CliSyntax.PREFIX_SYMPTOM + " " + PREFIX_NOTES;
+            + "Example: " + COMMAND_WORD + " 1,3,5 " + PREFIX_SYMPTOM + " " + PREFIX_NOTES;
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person(s): %1$s";
     public static final String MESSAGE_DELETE_FIELD_SUCCESS = "Deleted field(s) for Person(s): %1$s";
@@ -46,7 +46,7 @@ public abstract class DeleteCommand extends Command {
     public static final String MESSAGE_VALUE_NOT_ALLOWED =
             "Values are not allowed for the prefixes. Please specify only the prefix without any value.";
     public static final String MESSAGE_NO_VALUE_FOR_PERSON =
-            "The specified person(s) do not have any value for the specified prefix(es).";
+            "One or more specified person(s) do not have any value for the specified prefix(es).";
 
     private Set<Prefix> prefixes;
 
@@ -61,6 +61,9 @@ public abstract class DeleteCommand extends Command {
     public abstract Set<Index> getTargetIndicesAsSet();
 
     public Person getUpdatedPerson(Person personToDelete) throws CommandException {
+        requireNonNull(personToDelete);
+        assert !prefixes.isEmpty() : "There are no specified fields to delete.";
+
         Name name = personToDelete.getName();
         Phone phone = personToDelete.getPhone();
         Email email = personToDelete.getEmail();
@@ -80,6 +83,19 @@ public abstract class DeleteCommand extends Command {
         Notes updatedNotes = prefixes.contains(PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
         return new Person(name, phone, email, address, updatedSymptoms, ic,
                  urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, updatedNotes);
+    }
+
+    public Person[] getUpdatedPersons(Person[] personsToDelete) throws CommandException {
+        requireNonNull(personsToDelete);
+        Person[] updatedPersons = new Person[personsToDelete.length];
+        for (int i = 0; i < personsToDelete.length; i++) {
+            Person person = personsToDelete[i];
+            Person updatedPerson = getUpdatedPerson(person);
+            assert updatedPerson.isSamePerson(person)
+                    : "Updated person should be have the same identity as original person.";
+            updatedPersons[i] = updatedPerson;
+        }
+        return updatedPersons;
     }
 
     @Override

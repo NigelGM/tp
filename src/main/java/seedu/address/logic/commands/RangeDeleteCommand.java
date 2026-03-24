@@ -53,14 +53,14 @@ public class RangeDeleteCommand extends DeleteCommand {
 
         verifyValidIndices(model, lastShownList);
 
-        Person[] personsToDelete = getPersonsToDelete(model, lastShownList);
+        Person[] personsToDelete = getPersonsToDelete(lastShownList);
         StringBuilder deletedPersonsString = new StringBuilder();
 
         if (!getPrefixes().isEmpty()) {
-            for (Person person : personsToDelete) {
-                Person updatedPerson = getUpdatedPerson(person);
-                assert updatedPerson.isSamePerson(person)
-                        : "Updated person should be have the same identity as original person.";
+            Person[] updatedPersons = getUpdatedPersons(personsToDelete);
+            for (int i = 0; i < personsToDelete.length; i++) {
+                Person person = personsToDelete[i];
+                Person updatedPerson = updatedPersons[i];
                 model.setPerson(person, updatedPerson);
                 deletedPersonsString.append("\n" + Messages.format(updatedPerson));
             }
@@ -85,7 +85,7 @@ public class RangeDeleteCommand extends DeleteCommand {
         }
     }
 
-    private Person[] getPersonsToDelete(Model model, List<Person> lastShownList) {
+    private Person[] getPersonsToDelete(List<Person> lastShownList) {
         int numberOfPersonsToDelete = endIndex.getZeroBased() - startIndex.getZeroBased() + 1;
         Person[] personsToDelete = new Person[numberOfPersonsToDelete];
         for (int i = 0; i < numberOfPersonsToDelete; i++) {

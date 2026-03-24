@@ -59,6 +59,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                 PREFIX_NOTES
         );
 
+        final String indicesString = argMultimap.getPreamble();
+        if (indicesString.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
+        }
+
         if (argMultimap.areAnyPrefixesPresent(
                 PREFIX_PATIENT_NAME,
                 PREFIX_PATIENT_PHONE,
@@ -84,10 +89,6 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             throw new ParseException(DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
         }
 
-        final String indicesString = argMultimap.getPreamble();
-        if (indicesString.isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_MISSING_PERSON_INDEX, DeleteCommand.MESSAGE_USAGE));
-        }
         Set<Prefix> prefixes = argMultimap.getPrefixes();
 
         if (indicesString.contains(MULTIPLE_INDICES_DELIMITER)) {

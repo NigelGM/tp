@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -20,6 +22,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -81,6 +84,68 @@ public class SingleDeleteCommandTest {
 
         Index lastIndex = Index.fromOneBased(model.getFilteredPersonList().size());
         assertCommandFailure(deleteCommand, model, Messages.getErrorMessageForInvalidIndex(lastIndex));
+    }
+
+    @Test
+    public void execute_validPrefixesUnfilteredList_success() {
+        Person targetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertFalse(targetPerson.getSymptoms().isEmpty() || targetPerson.getNotes().getValue().isEmpty(),
+                "Precondition failed: target person should have symptoms and notes.");
+        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
+
+        Person expectedPerson = new PersonBuilder(targetPerson).withSymptoms().withNotes("").build();
+        String expectedMessage = String.format(
+                DeleteCommand.MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(expectedPerson));
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(targetPerson, expectedPerson);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_missingFieldValueUnfilteredList_throwsCommandException() {
+        Person targetPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        assertTrue(targetPerson.getSymptoms().isEmpty() && !targetPerson.getNotes().getValue().isEmpty(),
+                "Precondition failed: target person should have notes but no symptoms.");
+
+        DeleteCommand deleteCommand =
+                new SingleDeleteCommand(INDEX_SECOND_PERSON, Set.of(PREFIX_SYMPTOM, PREFIX_NOTES));
+
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NO_VALUE_FOR_PERSON);
+    }
+
+    @Test
+    public void execute_validPrefixFilteredList_success() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person targetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertFalse(targetPerson.getSymptoms().isEmpty(),
+                "Precondition failed: target person should have symptoms.");
+        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM));
+
+        Person expectedPerson = new PersonBuilder(targetPerson).withSymptoms().build();
+        String expectedMessage = String.format(
+                DeleteCommand.MESSAGE_DELETE_FIELD_SUCCESS, Messages.format(expectedPerson));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(targetPerson, expectedPerson);
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_missingFieldValueFilteredList_throwsCommandException() {
+        showPersonAtIndex(model, INDEX_SECOND_PERSON);
+
+        Person targetPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertTrue(targetPerson.getSymptoms().isEmpty(),
+                "Precondition failed: target person should not have symptoms.");
+
+        DeleteCommand deleteCommand = new SingleDeleteCommand(INDEX_FIRST_PERSON, Set.of(PREFIX_SYMPTOM));
+
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_NO_VALUE_FOR_PERSON);
     }
 
     @Test
