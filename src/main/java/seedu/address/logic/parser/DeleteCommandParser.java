@@ -16,11 +16,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_URGENCY;
 
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.MultipleDeleteCommand;
@@ -32,8 +30,6 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * Parses input arguments and creates a new DeleteCommand object
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
-
-    private final Logger logger = LogsCenter.getLogger(getClass());
 
     private static final String MULTIPLE_INDICES_DELIMITER = ",";
     private static final String RANGE_INDICES_DELIMITER = "-";
@@ -81,6 +77,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_SYMPTOM, PREFIX_NOTES);
         } catch (ParseException pe) {
             throw new ParseException(DeleteCommand.MESSAGE_DUPLICATE_PREFIXES);
+        }
+
+        if (argMultimap.getValue(PREFIX_SYMPTOM).map(v -> !v.isEmpty()).orElse(false)
+                || argMultimap.getValue(PREFIX_NOTES).map(v -> !v.isEmpty()).orElse(false)) {
+            throw new ParseException(DeleteCommand.MESSAGE_VALUE_NOT_ALLOWED);
         }
 
         final String indicesString = argMultimap.getPreamble();

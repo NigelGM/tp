@@ -1,5 +1,8 @@
 package seedu.address.logic.commands;
 
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SYMPTOM;
+
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -33,12 +36,14 @@ public abstract class DeleteCommand extends Command {
     public static final String MESSAGE_DELETE_FIELD_USAGE = COMMAND_WORD
             + ": Deletes specific fields of the person(s) specified.\n"
             + "Parameters: INDEX(ES) PREFIX [PREFIX ...] (must be optional fields)\n"
-            + "Example: " + COMMAND_WORD + " 1,3,5 " + CliSyntax.PREFIX_SYMPTOM + " " + CliSyntax.PREFIX_NOTES;
+            + "Example: " + COMMAND_WORD + " 1,3,5 " + CliSyntax.PREFIX_SYMPTOM + " " + PREFIX_NOTES;
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person(s): %1$s";
     public static final String MESSAGE_DELETE_FIELD_SUCCESS = "Deleted field(s) for Person(s): %1$s";
     public static final String MESSAGE_DUPLICATE_PREFIXES =
             "Duplicate prefixes are not allowed. Each prefix should only be specified once.";
+    public static final String MESSAGE_VALUE_NOT_ALLOWED =
+            "Values are not allowed for the prefixes. Please specify only the prefix without any value.";
 
     private Set<Prefix> prefixes;
 
@@ -57,14 +62,13 @@ public abstract class DeleteCommand extends Command {
         Phone phone = personToDelete.getPhone();
         Email email = personToDelete.getEmail();
         Address address = personToDelete.getAddress();
-        Set<Symptom> updatedSymptoms =
-                prefixes.contains(CliSyntax.PREFIX_SYMPTOM) ? Set.of() : personToDelete.getSymptoms();
+        Set<Symptom> updatedSymptoms = prefixes.contains(PREFIX_SYMPTOM) ? Set.of() : personToDelete.getSymptoms();
         Ic ic = personToDelete.getIc();
         UrgencyLevel urgencyLevel = personToDelete.getUrgencyLevel();
         NextOfKinPhone nextOfKinPhone = personToDelete.getNextOfKinPhone();
         DoctorName doctorName = personToDelete.getDoctorName();
         NextOfKin nextOfKin = personToDelete.getNextOfKin();
-        Notes updatedNotes = prefixes.contains(CliSyntax.PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
+        Notes updatedNotes = prefixes.contains(PREFIX_NOTES) ? new Notes("") : personToDelete.getNotes();
         return new Person(name, phone, email, address, updatedSymptoms, ic,
                  urgencyLevel, nextOfKinPhone, doctorName, nextOfKin, updatedNotes);
     }
