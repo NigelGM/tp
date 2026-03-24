@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.Name;
 import seedu.address.model.person.Notes;
 import seedu.address.testutil.Assert;
 
