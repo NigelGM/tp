@@ -3,7 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.util.List;
+import java.util.*;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -44,7 +44,7 @@ public class MultipleUpdateCommand extends Command {
 
         // 1. Validate indices and capture the exact Person references FIRST
         // This prevents list-shifting bugs because we grab everyone before making changes.
-        List<Person> personsToUpdate = new java.util.ArrayList<>();
+        List<Person> personsToUpdate = new ArrayList<>();
         for (Index index : targetIndices) {
             if (index.getZeroBased() >= lastShownList.size()) {
                 throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
@@ -54,7 +54,7 @@ public class MultipleUpdateCommand extends Command {
 
         // 2. Pre-compute updates and check for duplicates
         // This guarantees Atomic Execution: if one fails, nothing changes.
-        List<Person> updatedPersons = new java.util.ArrayList<>();
+        List<Person> updatedPersons = new ArrayList<>();
         for (Person personToUpdate : personsToUpdate) {
             Person updatedPerson = SingleUpdateCommand.createUpdatedPerson(personToUpdate, updatePersonDescriptor);
 
