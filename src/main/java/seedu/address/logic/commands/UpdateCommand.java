@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_APPEND_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
@@ -64,7 +65,7 @@ public class UpdateCommand extends Command {
             + "[" + PREFIX_NEXT_OF_KIN_RELATIONSHIP + "NEXT-OF-KIN-RELATIONSHIP] "
             + "[" + PREFIX_DOCTOR + "]"
             + "[" + PREFIX_SYMPTOM + "SYMPTOM]"
-            + "[" + PREFIX_NOTES + "NOTES]...\n"
+            + "[" + PREFIX_NOTES + "NOTES] [" + PREFIX_APPEND_NOTES + "APPEND_NOTES]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PATIENT_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
@@ -75,6 +76,9 @@ public class UpdateCommand extends Command {
 
     private final Index index;
     private final UpdatePersonDescriptor updatePersonDescriptor;
+    private Person originalPerson;
+    private Person updatedPersonForUndo;
+    private boolean wasExecuted = false;
 
     /**
      * @param index of the person in the filtered person list to edit
@@ -89,6 +93,11 @@ public class UpdateCommand extends Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
@@ -98,7 +107,9 @@ public class UpdateCommand extends Command {
         }
 
         Person personToUpdate = lastShownList.get(index.getZeroBased());
+        originalPerson = personToUpdate;
         Person updatedPerson = createUpdatedPerson(personToUpdate, updatePersonDescriptor);
+        updatedPersonForUndo = updatedPerson;
 
         if (!personToUpdate.isSamePerson(updatedPerson) && model.hasPerson(updatedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
@@ -106,14 +117,25 @@ public class UpdateCommand extends Command {
 
         model.setPerson(personToUpdate, updatedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        wasExecuted = true;
         return new CommandResult(String.format(MESSAGE_UPDATE_PERSON_SUCCESS, Messages.format(updatedPerson)));
+    }
+
+    @Override
+    public void undo(Model model) throws CommandException {
+        requireNonNull(model);
+        if (wasExecuted && updatedPersonForUndo != null && originalPerson != null) {
+            model.setPerson(updatedPersonForUndo, originalPerson);
+            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        }
     }
 
     /**
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
      */
-    private static Person createUpdatedPerson(Person personToUpdate, UpdatePersonDescriptor updatePersonDescriptor) {
+    private static Person createUpdatedPerson(Person personToUpdate, UpdatePersonDescriptor updatePersonDescriptor)
+            throws CommandException {
         assert personToUpdate != null;
 
         Name updatedName = updatePersonDescriptor.getName().orElse(personToUpdate.getName());
@@ -130,20 +152,26 @@ public class UpdateCommand extends Command {
         NextOfKin updatedNextOfKin = updatePersonDescriptor.getNextOfKin().orElse(personToUpdate.getNextOfKin());
         NextOfKinRelationship updatedNextOfKinRelationship = updatePersonDescriptor.getNextOfKinRelationship()
                 .orElse(personToUpdate.getNextOfKinRelationship());
-        Notes updatedNotes = updatePersonDescriptor.getNotes().orElse(personToUpdate.getNotes());
 
-        return new Person(updatedName,
-                updatedPhone,
-                updatedEmail,
-                updatedAddress,
-                updatedSymptoms,
-                updatedIc,
-                updatedUrgencyLevel,
-                updatedNextOfKinPhone,
-                updatedDoctorName,
-                updatedNextOfKin,
-                updatedNextOfKinRelationship,
-                updatedNotes);
+        // NEW: Abstracted Append Logic
+        Notes updatedNotes = personToUpdate.getNotes();
+
+        if (updatePersonDescriptor.getNotes().isPresent()) {
+            updatedNotes = updatePersonDescriptor.getNotes().get();
+        } else if (updatePersonDescriptor.getNotesToAppend().isPresent()) {
+            try {
+                // The combination logic is now entirely handled by the Notes class
+                updatedNotes = updatedNotes.append(updatePersonDescriptor.getNotesToAppend().get());
+            } catch (IllegalArgumentException e) {
+                // Catches the error if the appended notes exceed character limits
+                throw new CommandException("Appending this text exceeds the note character constraints. "
+                        + Notes.MESSAGE_CONSTRAINTS);
+            }
+        }
+
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedSymptoms,
+                updatedIc, updatedUrgencyLevel, updatedNextOfKinPhone, updatedDoctorName,
+                updatedNextOfKin, updatedNextOfKinRelationship, updatedNotes);
     }
 
     @Override
@@ -152,7 +180,6 @@ public class UpdateCommand extends Command {
             return true;
         }
 
-        // instanceof handles nulls
         if (!(other instanceof UpdateCommand otherUpdateCommand)) {
             return false;
         }
@@ -186,6 +213,7 @@ public class UpdateCommand extends Command {
         private NextOfKin nextOfKin;
         private NextOfKinRelationship nextOfKinRelationship;
         private Notes notes;
+        private Notes notesToAppend; // CHANGED to Notes
 
         public UpdatePersonDescriptor() {}
 
@@ -206,14 +234,13 @@ public class UpdateCommand extends Command {
             setNextOfKin(toCopy.nextOfKin);
             setNextOfKinRelationship(toCopy.nextOfKinRelationship);
             setNotes(toCopy.notes);
+            setNotesToAppend(toCopy.notesToAppend); // Updated
         }
 
-        /**
-         * Returns true if at least one field is edited.
-         */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(name, phone, email, address,
-                    symptoms, urgencyLevel, ic, nextOfKinPhone, doctorName, nextOfKin, nextOfKinRelationship, notes);
+                    symptoms, urgencyLevel, ic, nextOfKinPhone, doctorName, nextOfKin, 
+                    nextOfKinRelationship, notes, notesToAppend);
         }
 
         public void setName(Name name) {
@@ -263,6 +290,7 @@ public class UpdateCommand extends Command {
         public Optional<DoctorName> getDoctorName() {
             return Optional.ofNullable(doctorName);
         }
+
         public void setNextOfKin(NextOfKin nextOfKin) {
             this.nextOfKin = nextOfKin;
         }
@@ -283,19 +311,19 @@ public class UpdateCommand extends Command {
             return Optional.ofNullable(notes);
         }
 
-        /**
-         * Sets {@code symptoms} to this object's {@code symptoms}.
-         * A defensive copy of {@code symptoms} is used internally.
-         */
+        // UPDATED: Now accepts and returns Notes
+        public void setNotesToAppend(Notes notesToAppend) {
+            this.notesToAppend = notesToAppend;
+        }
+
+        public Optional<Notes> getNotesToAppend() {
+            return Optional.ofNullable(notesToAppend);
+        }
+
         public void setSymptoms(Set<Symptom> symptoms) {
             this.symptoms = (symptoms != null) ? new HashSet<>(symptoms) : null;
         }
 
-        /**
-         * Returns an unmodifiable symptom set, which throws {@code UnsupportedOperationException}
-         * if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code symptoms} is null.
-         */
         public Optional<Set<Symptom>> getSymptoms() {
             return (symptoms != null) ? Optional.of(Collections.unmodifiableSet(symptoms)) : Optional.empty();
         }
@@ -326,7 +354,6 @@ public class UpdateCommand extends Command {
                 return true;
             }
 
-            // instanceof handles nulls
             if (!(other instanceof UpdatePersonDescriptor otherUpdatePersonDescriptor)) {
                 return false;
             }
@@ -342,7 +369,8 @@ public class UpdateCommand extends Command {
                     && Objects.equals(doctorName, otherUpdatePersonDescriptor.doctorName)
                     && Objects.equals(nextOfKin, otherUpdatePersonDescriptor.nextOfKin)
                     && Objects.equals(nextOfKinRelationship, otherUpdatePersonDescriptor.nextOfKinRelationship)
-                    && Objects.equals(notes, otherUpdatePersonDescriptor.notes);
+                    && Objects.equals(notes, otherUpdatePersonDescriptor.notes)
+                    && Objects.equals(notesToAppend, otherUpdatePersonDescriptor.notesToAppend);
         }
 
         @Override
@@ -360,6 +388,7 @@ public class UpdateCommand extends Command {
                     .add("nextOfKin", nextOfKin)
                     .add("nextOfKinRelationship", nextOfKinRelationship)
                     .add("notes", notes)
+                    .add("notesToAppend", notesToAppend)
                     .toString();
         }
     }

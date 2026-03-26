@@ -18,5 +18,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_NEXT_OF_KIN = new Prefix("nk/");
     public static final Prefix PREFIX_NEXT_OF_KIN_RELATIONSHIP = new Prefix("nkr/");
     public static final Prefix PREFIX_NOTES = new Prefix("n/");
+    public static final Prefix PREFIX_APPEND_NOTES = new Prefix("an/"); // Add this line
 
 }

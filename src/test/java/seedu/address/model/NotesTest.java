@@ -63,4 +63,26 @@ public class NotesTest {
         Notes notes2 = new Notes("Notes 2");
         assertNotEquals(notes1.hashCode(), notes2.hashCode());
     }
+
+    @Test
+    public void append_emptyAdditionalNotes_returnsOriginal() {
+        // This turns Line 50 GREEN
+        Notes original = new Notes("Existing Content");
+        Notes emptyAppend = new Notes("");
+        assertEquals(original, original.append(emptyAppend));
+    }
+
+    @Test
+    public void append_toEmptyNotes_returnsAdditional() {
+        // This turns Line 42 GREEN, while accounting for timestamps!
+        Notes emptyOriginal = new Notes("");
+        Notes toAppend = new Notes("New Content");
+
+        // Generate the expected timestamp format
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format
+                        .DateTimeFormatter.ofPattern("dd MMM HH:mm"));
+        String expectedNote = "[" + timestamp + "] New Content";
+
+        assertEquals(expectedNote, emptyOriginal.append(toAppend).toString());
+    }
 }

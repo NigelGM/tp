@@ -86,19 +86,21 @@ public class UpdatePersonDescriptorTest {
     @Test
     public void toStringMethod() {
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
-        String expected = UpdatePersonDescriptor.class.getCanonicalName() + "{name="
-                + updatePersonDescriptor.getName().orElse(null) + ", phone="
-                + updatePersonDescriptor.getPhone().orElse(null) + ", email="
-                + updatePersonDescriptor.getEmail().orElse(null) + ", address="
-                + updatePersonDescriptor.getAddress().orElse(null) + ", symptoms="
-                + updatePersonDescriptor.getSymptoms().orElse(null) + ", ic="
-                + updatePersonDescriptor.getIc().orElse(null) + ", urgencyLevel="
-                + updatePersonDescriptor.getUrgencyLevel().orElse(null) + ", nextOfKinPhone="
-                + updatePersonDescriptor.getNextOfKinPhone().orElse(null) + ", doctorName="
-                + updatePersonDescriptor.getDoctorName().orElse(null) + ", nextOfKin="
-                + updatePersonDescriptor.getNextOfKin().orElse(null) + ", nextOfKinRelationship="
-                + updatePersonDescriptor.getNextOfKinRelationship().orElse(null) + ", notes="
-                + updatePersonDescriptor.getUrgencyLevel().orElse(null)
+        String expected = UpdatePersonDescriptor.class.getCanonicalName() + "{"
+                + "name=" + updatePersonDescriptor.getName().orElse(null) + ", "
+                + "phone=" + updatePersonDescriptor.getPhone().orElse(null) + ", "
+                + "email=" + updatePersonDescriptor.getEmail().orElse(null) + ", "
+                + "address=" + updatePersonDescriptor.getAddress().orElse(null) + ", "
+                + "symptoms=" + updatePersonDescriptor.getSymptoms().orElse(null) + ", "
+                + "ic=" + updatePersonDescriptor.getIc().orElse(null) + ", "
+                + "urgencyLevel=" + updatePersonDescriptor.getUrgencyLevel().orElse(null) + ", "
+                + "nextOfKinPhone=" + updatePersonDescriptor.getNextOfKinPhone().orElse(null) + ", "
+                + "doctorName=" + updatePersonDescriptor.getDoctorName().orElse(null) + ", "
+                + "nextOfKin=" + updatePersonDescriptor.getNextOfKin().orElse(null) + ", "
+                + "nextOfKinRelationship=" + updatePersonDescriptor.getNextOfKin().orElse(null) + ", "
+                + "notes=" + updatePersonDescriptor.getNotes().orElse(null) 
+                      + updatePersonDescriptor.getNextOfKinRelationship().orElse(null) ", "
+                + "notesToAppend=" + updatePersonDescriptor.getNotesToAppend().orElse(null)
                 + "}";
         assertEquals(expected, updatePersonDescriptor.toString());
     }
