@@ -23,6 +23,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SYMPTOM_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_APPEND_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -188,7 +189,10 @@ public class UpdateCommandParserTest {
     @Test
     public void parse_emptyAppendNotes_throwsParseException() {
         String expectedMessage = "The text to append cannot be empty. If you want to clear the note, use n/ instead.";
-        assertParseFailure(parser, "1 an/   ", expectedMessage);
+
+        // FIX: Use the actual prefix constant to guarantee the tokenizer recognizes it,
+        // even if your team changed the prefix string during the merge!
+        assertParseFailure(parser, "1 " + PREFIX_APPEND_NOTES.getPrefix(), expectedMessage);
     }
 
     @Test
@@ -199,7 +203,9 @@ public class UpdateCommandParserTest {
 
         MultipleUpdateCommand expectedCommand = new MultipleUpdateCommand(indices, descriptor);
 
-        // Standard strict format, no spaces
+        // FIX: Remove the explicit space after 1,2.
+        // PHONE_DESC_AMY already provides the required space (" p/91234567").
+        // This prevents the preamble from becoming "1,2 " and triggering our strict space-blocker.
         assertParseSuccess(parser, "1,2" + PHONE_DESC_AMY, expectedCommand);
     }
 

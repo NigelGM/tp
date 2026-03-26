@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEXT_OF_KIN_RELATIONSHIP;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
@@ -44,13 +45,22 @@ public class UpdateCommandParser implements Parser<Command> {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args,
-                        PREFIX_PATIENT_NAME, PREFIX_PATIENT_PHONE, PREFIX_EMAIL,
-                        PREFIX_ADDRESS, PREFIX_SYMPTOM, PREFIX_IC, PREFIX_URGENCY,
-                        PREFIX_NEXT_OF_KIN_PHONE, PREFIX_DOCTOR, PREFIX_NEXT_OF_KIN,
-                        PREFIX_NOTES, PREFIX_APPEND_NOTES
+                        PREFIX_PATIENT_NAME,
+                        PREFIX_PATIENT_PHONE,
+                        PREFIX_EMAIL,
+                        PREFIX_ADDRESS,
+                        PREFIX_SYMPTOM,
+                        PREFIX_IC,
+                        PREFIX_URGENCY,
+                        PREFIX_NEXT_OF_KIN_PHONE,
+                        PREFIX_DOCTOR,
+                        PREFIX_NEXT_OF_KIN,
+                        PREFIX_NEXT_OF_KIN_RELATIONSHIP,
+                        PREFIX_NOTES,
+                        PREFIX_APPEND_NOTES
                 );
 
-        // FIX: Trim the preamble FIRST so normal spaces around the command don't trigger the space blocker.
+        // --- OUR MULTIPLE INDEX LOGIC ---
         String trimmedPreamble = argMultimap.getPreamble().trim();
 
         if (trimmedPreamble.isEmpty()) {
@@ -58,13 +68,12 @@ public class UpdateCommandParser implements Parser<Command> {
                     SingleUpdateCommand.MESSAGE_USAGE));
         }
 
-        // STRICT RULE: If the TRIMMED preamble has a comma AND a space (e.g., "1, 2"), REJECT.
+        // STRICT RULE: Check the TRIMMED preamble for spaces.
         if (trimmedPreamble.contains(",") && trimmedPreamble.contains(" ")) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     SingleUpdateCommand.MESSAGE_USAGE));
         }
 
-        // Logic to determine if we are updating multiple patients (comma-separated) or just one
         boolean isMultiple = trimmedPreamble.contains(",");
         List<Index> indices = null;
         Index singleIndex = null;
@@ -79,13 +88,22 @@ public class UpdateCommandParser implements Parser<Command> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     SingleUpdateCommand.MESSAGE_USAGE), pe);
         }
+        // --------------------------------
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME, PREFIX_PATIENT_PHONE,
-                PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_IC, PREFIX_URGENCY,
-                PREFIX_NEXT_OF_KIN_PHONE, PREFIX_DOCTOR, PREFIX_NEXT_OF_KIN,
-                PREFIX_NOTES, PREFIX_APPEND_NOTES);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_PATIENT_NAME,
+                PREFIX_PATIENT_PHONE,
+                PREFIX_EMAIL,
+                PREFIX_ADDRESS,
+                PREFIX_IC,
+                PREFIX_URGENCY,
+                PREFIX_NEXT_OF_KIN_PHONE,
+                PREFIX_DOCTOR,
+                PREFIX_NEXT_OF_KIN,
+                PREFIX_NEXT_OF_KIN_RELATIONSHIP,
+                PREFIX_NOTES,
+                PREFIX_APPEND_NOTES);
 
-        // Conflict check: cannot use n/ and an/ at the same time
+        // Prevent overwrite (n/) and append (an/) at the same time
         if (argMultimap.getValue(PREFIX_NOTES).isPresent() && argMultimap.getValue(PREFIX_APPEND_NOTES).isPresent()) {
             throw new ParseException("You cannot overwrite a note (n/) "
                     + "and append to a note (an/) in the same command.");
@@ -93,7 +111,6 @@ public class UpdateCommandParser implements Parser<Command> {
 
         UpdatePersonDescriptor updatePersonDescriptor = new UpdatePersonDescriptor();
 
-        // Standard Field Mapping
         if (argMultimap.getValue(PREFIX_PATIENT_NAME).isPresent()) {
             updatePersonDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_PATIENT_NAME).get()));
         }
@@ -104,8 +121,8 @@ public class UpdateCommandParser implements Parser<Command> {
             updatePersonDescriptor.setEmail(ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
         }
         if (argMultimap.getValue(PREFIX_URGENCY).isPresent()) {
-            updatePersonDescriptor.setUrgencyLevel(ParserUtil.parseUrgencyLevel(
-                    argMultimap.getValue(PREFIX_URGENCY).get()));
+            updatePersonDescriptor.setUrgencyLevel(ParserUtil
+                    .parseUrgencyLevel(argMultimap.getValue(PREFIX_URGENCY).get()));
         }
         if (argMultimap.getValue(PREFIX_ADDRESS).isPresent()) {
             updatePersonDescriptor.setAddress(ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get()));
@@ -114,22 +131,30 @@ public class UpdateCommandParser implements Parser<Command> {
             updatePersonDescriptor.setIc(ParserUtil.parseIc(argMultimap.getValue(PREFIX_IC).get()));
         }
         if (argMultimap.getValue(PREFIX_NEXT_OF_KIN_PHONE).isPresent()) {
-            updatePersonDescriptor.setNextOfKinPhone(ParserUtil.parseNextOfKinPhone(
-                    argMultimap.getValue(PREFIX_NEXT_OF_KIN_PHONE).get()));
+            updatePersonDescriptor.setNextOfKinPhone(ParserUtil
+                    .parseNextOfKinPhone(argMultimap.getValue(PREFIX_NEXT_OF_KIN_PHONE).get()));
         }
         if (argMultimap.getValue(PREFIX_DOCTOR).isPresent()) {
-            updatePersonDescriptor.setDoctorName(ParserUtil.parseDoctorName(
-                    argMultimap.getValue(PREFIX_DOCTOR).get()));
+            updatePersonDescriptor.setDoctorName(ParserUtil
+                    .parseDoctorName(argMultimap.getValue(PREFIX_DOCTOR).get()));
         }
         if (argMultimap.getValue(PREFIX_NEXT_OF_KIN).isPresent()) {
-            updatePersonDescriptor.setNextOfKin(ParserUtil.parseNextOfKin(
-                    argMultimap.getValue(PREFIX_NEXT_OF_KIN).get()));
+            updatePersonDescriptor.setNextOfKin(ParserUtil
+                    .parseNextOfKin(argMultimap.getValue(PREFIX_NEXT_OF_KIN).get()));
         }
+
+        // --- TEAMMATE's NEW FIELD ---
+        if (argMultimap.getValue(PREFIX_NEXT_OF_KIN_RELATIONSHIP).isPresent()) {
+            updatePersonDescriptor.setNextOfKinRelationship(ParserUtil
+                    .parseNextOfKinRelationship(argMultimap.getValue(PREFIX_NEXT_OF_KIN_RELATIONSHIP).get()));
+        }
+        // -----------------------------
+
         if (argMultimap.getValue(PREFIX_NOTES).isPresent()) {
             updatePersonDescriptor.setNotes(ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get()));
         }
 
-        // Handle Append Notes and ensure the text is not empty
+        // Handle Append Note & block empty strings
         if (argMultimap.getValue(PREFIX_APPEND_NOTES).isPresent()) {
             String notesToAppend = argMultimap.getValue(PREFIX_APPEND_NOTES).get().trim();
             if (notesToAppend.isEmpty()) {
@@ -145,7 +170,7 @@ public class UpdateCommandParser implements Parser<Command> {
             throw new ParseException(SingleUpdateCommand.MESSAGE_NOT_UPDATED);
         }
 
-        // Return the correct command type based on the preamble contents
+        // --- OUR MULTIPLE COMMAND RETURN LOGIC ---
         if (isMultiple) {
             return new MultipleUpdateCommand(indices, updatePersonDescriptor);
         } else {
@@ -155,6 +180,7 @@ public class UpdateCommandParser implements Parser<Command> {
 
     private Optional<Set<Symptom>> parseSymptomsForEdit(Collection<String> symptoms) throws ParseException {
         assert symptoms != null;
+
         if (symptoms.isEmpty()) {
             return Optional.empty();
         }
