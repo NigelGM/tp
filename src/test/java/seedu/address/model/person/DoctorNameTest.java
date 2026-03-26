@@ -34,6 +34,11 @@ public class DoctorNameTest {
         assertThrows(IllegalArgumentException.class, () -> new DoctorName(invalidName));
     }
 
+    @Test
+    public void constructor_withLeadingAndTrailingWhitespaces_throwsIllegalArgumentException() {
+        String invalidName = "   Dr. Jane Doe  ";
+        assertThrows(IllegalArgumentException.class, () -> new DoctorName(invalidName));
+    }
 
     // isValidName tests
     @Test
