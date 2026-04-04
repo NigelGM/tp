@@ -41,18 +41,18 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 
 **Notes about the command format:**<br>
 
-* Words in `UPPER_CASE` are the parameters to be supplied by the user.<br/>
-  e.g. in `add pn/NAME`, `NAME` is a parameter which can be used as `add pn/John Doe`.
+* Words in `UPPER_CASE` and enclosed in angle brackets `<>` are the parameters to be supplied by the user.<br/>
+  e.g. in `add pn/<PATIENT_NAME`, `<PATIENT_NAME>` is a parameter which can be used as `add pn/John Doe`.
 * Items in square brackets are optional.<br/>
-  e.g `[n/NOTES]` can be used as `n/Patient has history of asthma` or simply left out.
+  e.g `[n/<NOTES>]` can be used as `n/Patient has history of asthma` or simply left out.
 * Parameters can be in any order.<br/>
-  e.g. if the command specifies `pn/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER pn/NAME` is also acceptable.
+  e.g. if the command specifies `pn/<PATIENT_NAME> p/<PHONE_NUMBER>`, `p/<PHONE_NUMBER> pn/<PATIENT_NAME>` is also acceptable.
 * All commands and prefixes are case-insensitive.
 * Leading and trailing spaces are ignored/trimmed automatically.
-* Internal spaces inside a command or prefix are not allowed and will be rejected.
+* Internal spaces inside a command (i.e. `d ele te 1`) or prefix (i.e. `p  n/`) are not allowed and will be rejected.
 
 </box>
-
+    
 ### Viewing help : `help`
 
 Shows a message explaining how to access the help page.
@@ -61,25 +61,79 @@ Shows a message explaining how to access the help page.
 
 ### Adding a patient: `add`
 
-Records comprehensive patient information (name, identification, contact details, medical urgency, and notes) and saves it to the hard disk.
+Records comprehensive patient information, add it to the address book and saves it to the hard disk.
 
-**Format:** `add pn/<PATIENT NAME> ic/<IC NUMBER> p/<PATIENT PHONE NUMBER> u/<URGENCY LEVEL> d/<DOCTOR NAME> nk/<NEXT-OF-KIN NAME> nkp/<NEXT-OF-KIN PHONE NUMBER> nkr/<NEXT-OF-KIN RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]`
+**Format:** `add pn/<PATIENT_NAME> ic/<IC_NUMBER> p/<PATIENT_PHONE_NUMBER> a/<ADDRESS> e/<EMAIL_ADDRESS> u/<URGENCY_LEVEL> d/<DOCTOR_NAME> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE_NUMBER> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]`
+* The fields `pn/`, `ic/`, `p/`, `a/`, `e/`, `u/`, `d/`, `nk/`, `nkp/`, and `nkr/` are **compulsory** and **must not be blank**.
+* The fields `s/` and `n/` are **optional**.
+* The same field cannot be provided more than once **except** for `s/` (symptoms).
+* All parameters have their leading and trailing spaces ignored/trimmed automatically.
 
-**Compulsory Fields & Constraints:**
-* **`pn/`, `d/`, `nk/` (Names):** May contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* **`ic/`:** Must follow the format: `[S/T/F/G/M]` + 7 digits + 1 letter (total 9 characters). Duplicates are not allowed.
-* **`p/`, `nkp/` (Phones):** Must contain exactly 8 digits (0-9 only).
-* **`u/` (Urgency):** Must be exactly one of: `low`, `moderate`, `high`, `extreme`.
-* **`nkr/` (Next of kin relationship):** May contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* 
-**Optional Fields:**
-* **`s/` (Symptoms):** Must be alphanumeric.
-* **`n/` (Notes):** Maximum length of 500 characters.
+**Patient Name (`pn/`):**
+* The patient's name.
+* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
+* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank names that only contain spaces.
+
+**IC Number (`ic/`):**
+* The patient's IC number.
+* Must follow the format: `[S/T/F/G/M]` + 7 digits + 1 letter (total 9 characters). For example, `S1234567A` is a valid IC number.
+* Duplicates are **not allowed** (i.e., two patients cannot have the same IC number).
+* Case-insensitivity (e.g., `s1234567a` is treated the same as `S1234567A`).
+
+**Patient Phone Number (`p/`):**
+* The patient's phone number.
+* Must contain exactly 8 digits and contain only `0-9`. For example, `98765432` is a valid phone number.
+
+**Address (`a/`):**
+* The patient's address.
+* Can contain any characters (including spaces).
+
+**Email Address (`e/`):**
+* The patient's email address.
+* Must follow the format: `<local-part>@<domain>`, where `<local-part>` and `<domain>` can contain letters, digits, and certain special characters.
+
+**Urgency Level (`u/`):**
+* The urgency level of the patient's condition.
+* Must be exactly one of: `low`, `moderate`, `high`, `extreme` (case-insensitive).
+* The urgency level is used to prioritize patients in the list, with `extreme` being the highest priority and `low` being the lowest.
+
+**Doctor Name (`d/`):**
+* The name of the doctor assigned to the patient.
+* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
+* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank doctor names that only contain spaces.
+
+**Next-of-Kin Name (`nk/`):**
+* The name of the patient's next of kin.
+* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
+* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank next-of-kin names that only contain spaces.
+
+**Next-of-Kin Phone Number (`nkp/`):**
+* The phone number of the patient's next of kin.
+* Must contain exactly 8 digits and contain only `0-9`. For example, `87654321` is a valid next-of-kin phone number.
+
+**Next-of-Kin Relationship (`nkr/`):**
+* The relationship of the next of kin to the patient (e.g., "Mother", "Brother", "Friend").
+* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
+* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank relationships that only contain spaces.
+
+**Symptoms (`s/`):**
+* The symptoms that the patient is experiencing.
+* Can contain alphanumeric characters and whitespace only (i.e., no special characters).
+* A patient can have any number of symptoms (including 0). To specify multiple symptoms, use multiple `s/` prefixes (e.g., `s/fever s/cough`).
+* If the prefix is declared then there must be a non-blank symptom after it (e.g., `s/` without any symptoms will be rejected).
+* If the prefix is not declared at all, it will be treated as if the patient has no symptoms.
+
+**Notes (`n/`):**
+* Additional notes about the patient.
+* Can contain any characters (including spaces).
+* Maximum length of 500 characters.
+* If the prefix is declared with a blank note (e.g., `n/` without any notes), it will be treated as an empty note (i.e., the patient will have no notes).
+* If the prefix is not declared at all, it will be treated as if the patient has no notes as well.
 
 **Tip:** A person can have any number of symptoms (including 0).
 
 **Examples:**
-* `add pn/John Doe Jun Kai ic/T0123456B p/12345678 u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
+* `add pn/John Doe Jun Kai ic/T0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
 
 ### Listing all patients : `list`
 
@@ -214,7 +268,7 @@ _Details coming soon ..._
 
 | Action | Format                                                                                     | Examples                                                                   |
 | :--- |:-------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
-| **Add** | `add pn/NAME ic/IC p/PHONE u/URGENCY d/DOCTOR nk/NOK nkp/NOK_PHONE [s/SYMPTOMS] [n/NOTES]` | `add pn/John ic/S1234567A p/98765432 u/high d/Dr Tan nk/Mary nkp/87654321` |
+| **Add** | `add pn/<PATIENT_NAME> ic/<IC_NUMBER> p/<PATIENT_PHONE_NUMBER> a/<ADDRESS> e/<EMAIL_ADDRESS> u/<URGENCY_LEVEL> d/<DOCTOR_NAME> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE_NUMBER> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]` | `add pn/John Doe Jun Kai ic/T0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm` |
 | **Update** | `update INDEX [prefix/VALUE]...`                                                           | `update 1 u/extreme n/Immediate surgery required`                          |
 | **Search** | `find [pn/NAME] [ic/IC] [p/PHONE] [e/EMAIL] [d/DOCTOR]`                                     | `find e/johndoe@example.com`, `find d/Dr Sally`, `find ic/S1234567A`                                         |
 | **Delete** | `delete INDEX` <br> `delete INDEX,INDEX` <br> `delete START-END`                           | `delete 3` <br> `delete 1,4` <br> `delete 2-5`                             |
