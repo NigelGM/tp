@@ -80,6 +80,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_findUnrecognisedPrefix_throwsParseException() {
+        assertThrows(ParseException.class,
+                "Find only accepts these prefixes: pn/, ic/, p/, e/, and d/.\n" + FindCommand.MESSAGE_USAGE,
+                () -> parser.parseCommand(FindCommand.COMMAND_WORD + " x/keyword"));
+    }
+
+    @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);

@@ -59,10 +59,12 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_unknownPrefix_throwsParseException() {
-        assertParseFailure(parser, " n/asthma",
-                "Find only accepts these prefixes: pn/, ic/, p/, e/, and d/.\n" + FindCommand.MESSAGE_USAGE);
-        assertParseFailure(parser, " nk/family",
-                "Find only accepts these prefixes: pn/, ic/, p/, e/, and d/.\n" + FindCommand.MESSAGE_USAGE);
+        String unknownPrefixMessage = "Find only accepts these prefixes: pn/, ic/, p/, e/, and d/.\n"
+                + FindCommand.MESSAGE_USAGE;
+        assertParseFailure(parser, " n/asthma", unknownPrefixMessage);
+        assertParseFailure(parser, " nk/family", unknownPrefixMessage);
+        // Prefix at start of args (no leading space) after trim — still rejected
+        assertParseFailure(parser, "x/unrecognised", unknownPrefixMessage);
     }
 
     @Test
