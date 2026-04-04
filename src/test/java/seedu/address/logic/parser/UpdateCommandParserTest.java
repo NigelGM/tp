@@ -229,4 +229,13 @@ public class UpdateCommandParserTest {
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+
+    @Test
+    public void parse_trailingCommas_failure() {
+        // The expected error message shown in your GUI screenshot
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SingleUpdateCommand.MESSAGE_USAGE);
+
+        // Tests the parser with trailing commas and a valid prefix
+        assertParseFailure(parser, "1,2,3,,," + PHONE_DESC_AMY, expectedMessage);
+    }
 }
