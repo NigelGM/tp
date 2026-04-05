@@ -648,7 +648,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Beginner user**: A user who is new to the app and may not be familiar with all its features, but can still use it to manage patient records with some guidance.
 * **User**: A user, which can be either a triage coordinator, an expert user or a beginner user.
 * **Address book**: The collection of patient records stored in the app, represented as an `AddressBook` object.
-* **Person/Patient**: A patient record in the address book, represented as a `Person` object.
+* **Person/Patient**: A patient record in the address book, represented as a `Person` object. They are used interchangeably, but they refer to the same thing in the context of this app.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
