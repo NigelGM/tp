@@ -79,4 +79,18 @@ public class NotesTest {
         Notes toAppend = new Notes("New Content");
         assertEquals(toAppend.toString(), emptyOriginal.append(toAppend).toString());
     }
+
+    @Test
+    public void constructor_whitespaceOnly_trimsToEmpty() {
+        // A string with only spaces should result in an empty string value
+        String whitespace = "    ";
+        assertEquals("", new Notes(whitespace).getValue());
+    }
+
+    @Test
+    public void constructor_leadingTrailingWhitespace_trimsCorrectly() {
+        // "  urgent  " should become "urgent"
+        String messyNotes = "  Patient requires immediate attention  ";
+        assertEquals("Patient requires immediate attention", new Notes(messyNotes).getValue());
+    }
 }
