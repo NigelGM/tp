@@ -265,10 +265,9 @@ The add command lets users add a new patient to the address book. It is facilita
 3. The `LogicManager` then executes the `AddCommand` object by calling its `execute` method.
 4. Within the `AddCommand#execute` method, the command first checks for duplicate patients by calling `Model#hasPerson`. If a duplicate is found, a `CommandException` is thrown. If not, the new patient is added to the model using `Model#addPerson`, and a success message is returned.
 
-Here is a sequence diagram showing when a **valid** add command is executed:
+Here is a sequence diagram of the logic component when a **valid** add command is executed:
 
 <puml src="diagrams/AddSequenceDiagram.puml" alt="AddSequenceDiagram-Logic" />
-
 
 ### \[Proposed\] Undo/redo feature
 

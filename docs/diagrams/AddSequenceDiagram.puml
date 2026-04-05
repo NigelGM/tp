@@ -51,7 +51,7 @@ deactivate AddCommandParser
 AddCommandParser -[hidden]-> AddressBookParser
 destroy AddCommandParser
 
-AddressBookParser --> LogicManager :
+AddressBookParser --> LogicManager
 deactivate AddressBookParser
 
 LogicManager -> AddCommand : execute(m)
@@ -73,12 +73,12 @@ create CommandResult
 AddCommand -> CommandResult
 activate CommandResult
 
-CommandResult --> AddCommand
+CommandResult --> AddCommand :r
 deactivate CommandResult
 
-AddCommand --> LogicManager :
+AddCommand --> LogicManager : r
 deactivate AddCommand
 
-[<--LogicManager
+[<--LogicManager : r
 deactivate LogicManager
 @enduml
