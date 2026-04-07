@@ -255,6 +255,68 @@ The activity diagram below summarizes parsing and execution outcomes:
     * *Pros:* Faster for casual typing.
     * *Cons:* Ambiguity between urgency labels, symptom names, and future fields; worse error messages.
 
+### Command History Navigation
+
+#### Implementation
+
+The command history navigation feature allows users to cycle through previously successfully executed commands using the up/down arrow keys. The command history is kept so that no duplicated commands. This is implemented in the `CommandHistory` class, which maintains a list of previously executed commands strings that are trimmed to remove leading and trailing whitespaces, a pointer to the current position in that history, and the current user input being typed. The command history is session-based, meaning that the command history is cleared when the app is closed and does not persist across sessions.
+
+The `CommandHistory` class provides the following methods:
+* `CommandHistory#add(String command)` — Adds a new command to the history and resets the pointer to the end of the list.
+* `CommandHistory#getPreviousCommand(String currentInput)` — Moves the pointer up to the previous command and returns it. If the pointer is already at the top of the history, it remains there and returns the same command.
+* `CommandHistory#getNextCommand()` — Moves the pointer down to the next command and returns it. If the pointer is already at the end of the history, it remains there and returns an empty string (indicating no command).
+* `CommandHistory#removeAnyDuplicateCommands(String command)` — Removes any existing occurrence of the given command from the history to prevent duplicates.
+
+<box type="info" seamless>
+
+* If there is a duplicate command in the history, it is removed before adding the new command. This ensures that the history contains only unique commands, and the most recent occurrence of a command is what gets stored.
+
+* Duplicate commands are identified using case-insensitive comparison after trimming leading and trailing whitespace. A command is considered a duplicate only if it **exactly** matches an existing command in the history list.
+
+</box>
+
+The `CommandBox` class listens for key presses and interacts with the `CommandHistory` to update the command input field accordingly when the user presses the up/down arrow keys.
+
+Here is a class diagram summarizing the main types involved in the command history feature:
+
+<puml src="diagrams/CommandHistoryClassDiagram.puml" width="300" />
+
+Given below is an example usage scenario. Assume there are already some patient records in the address book before the user executes any command.
+
+**Step 1.** The user executes the command `add pn/Alice …​`. The `CommandHistory` adds this command to its history list and resets the pointer to the end.
+
+**Step 2.** The user executes the command `delete 1`. The `CommandHistory` adds this command to its history list and resets the pointer to the end. 
+
+**Step 3.** The user enters a partial command `add pn/Bob` but has not executed it yet. This partial input is stored in the `CommandHistory` as the current user input, but it is not added to the history list until it is executed.
+
+**Step 4.** The user now presses the up arrow key. The `CommandHistory` moves the pointer up to the previous command (`delete 1`) and returns it, which is then displayed in the command input field.
+
+**Step 5.** The user presses the up arrow key again. The `CommandHistory` moves the pointer up to the previous command (`add pn/Alice …​`) and returns it, which is then displayed in the command input field.
+
+**Step 6.** The user presses the up arrow key again. Since the pointer is already at the top of the history, it remains there and returns the same command (`add pn/Alice …​`), which is displayed in the command input field.
+
+**Step 7.** The user now presses the down arrow key. The `CommandHistory` moves the pointer down to the next command (`delete 1`) and returns it, which is displayed in the command input field.
+
+**Step 8.** The user presses the down arrow key again. The `CommandHistory` moves the pointer down to the end of the history (since there are no more commands), and returns the initial partial command input (`add pn/Bob`), which is displayed in the command input field.
+
+Here is a sequence diagram showing how the command history navigation works when the user presses the up arrow key (Assuming there are already some commands in the history and that the previous command in the history is `delete 1`):
+
+<puml src="diagrams/CommandHistorySequenceDiagram.puml" alt="CommandHistorySequenceDiagram" />
+
+<box type="info" seamless>
+
+Note that `getPreviousCommand("")` method is taking in an empty string, that means that the user has not typed anything in the command box before pressing the up arrow key.
+
+</box>
+
+The following activity diagram summarizes the behavior of the command history navigation when the user presses the up/down arrow keys:
+
+<puml src="diagrams/CommandHistoryActivityDiagram-Up-Down.puml" width="400" />
+
+The following activity diagram summarizes the behavior of the command history navigation when the user enters a new command (e.g., `add pn/Charlie …​`) and executes it:
+
+<puml src="diagrams/CommandHistoryActivityDiagram-Enter.puml" width="600" />
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

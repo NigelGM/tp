@@ -196,25 +196,25 @@ Permanently removes patient records from ClinicConnect.
 
 **Format:**
 
-**Single deletion:** `delete INDEX`
-* Edits the patient at the specified `INDEX`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
+**Single deletion:** `delete <INDEX>`
+* Edits the patient at the specified `<INDEX>`. The index refers to the index number shown in the displayed patient list. The index **must be a positive integer**.
 
-**Multiple deletion:** `delete INDEX,INDEX[,INDEX,...]`
+**Multiple deletion:** `delete <INDEX>,<INDEX>[,<INDEX>,...]`
 * Edits the patients at the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Comma (`,`)
 * Duplicated indices (e.g. `delete 2,2`) will be rejected.
 
-**Range deletion:** `delete START_INDEX-END_INDEX`
+**Range deletion:** `delete <START_INDEX>-<END_INDEX>`
 * Edits the patients in the range of the specified indices. The indices refer to the index numbers shown in the displayed patient list. The indices **must be positive integers**.
 * Delimiter: Hyphen (`-`)
 * The start index must be less than or equal to the end index.
 
-**Optional fields deletion:** `delete INDICES [s/] [n/]`
-* Deletes all the symptoms (`s/`) and/or notes (`n/`) of the patients at the specified indices. `INDICES` refers to any of the above index formats.
+**Optional fields deletion:** `delete <INDICES> [s/] [n/]`
+* Deletes all the symptoms (`s/`) and/or notes (`n/`) of the patients at the specified indices. `<INDICES>` refers to any of the above index formats.
 * Prefixes must be provided without any parameters (e.g. `n/notes` will be rejected).
 
-**Specific values deletion:** `delete INDICES [s/SYMPTOM]...`
-* Deletes the specified symptoms of the patients at the specified indices. `INDICES` refers to any of the above index formats.
+**Specific values deletion:** `delete <INDICES> [s/<SYMPTOM>]...`
+* Deletes the specified symptoms of the patients at the specified indices. `<INDICES>` refers to any of the above index formats.
 * All prefixes must be provided with parameters (e.g. `s/fever s/` will be rejected).
 
 **Examples:**
@@ -269,11 +269,11 @@ The command history removes duplicated commands, so if you enter the same comman
 
 Examples of how duplicated commands are handled in the command history:
 
-| Commands about to enter                                       | Command in command history | Is it considered a duplicate? | Why?                                                                                                                                            |
-|---------------------------------------------------------------|----------------------------|-----|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| `[LEADING_WHITESPACES] delete 1 s/ n/ [TRAILING_WHITESPACES]` | `delete 1 s/ n/`           | Yes | After trimming leading and trailing whitespaces, the command is identical to the existing command in the history (case-insensitive comparison). |
-| `DELETE 1 S/ N/`                                              | `delete 1 s/ n/`           | Yes | Case-insensitive comparison, the command is identical to the existing command in the history.                                                   |
-| `delete 1 n/ s/`                                              | `delete 1 s/ n/`           | No  | Althought the both commands are functionally the same, they are not be treated as duplicates as they are not identical                          |
+| Commands about to enter                                   | Command in command history | Is it considered a duplicate? | Why?                                                                                                                                            |
+|-----------------------------------------------------------|----------------------------|-----|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `LEADING_WHITESPACES delete 1 s/ n/ TRAILING_WHITESPACES` | `delete 1 s/ n/`           | Yes | After trimming leading and trailing whitespaces, the command is identical to the existing command in the history (case-insensitive comparison). |
+| `DELETE 1 S/ N/`                                          | `delete 1 s/ n/`           | Yes | Case-insensitive comparison, the command is identical to the existing command in the history.                                                   |
+| `delete 1 n/ s/`                                          | `delete 1 s/ n/`           | No  | Althought the both commands are functionally the same, they are not be treated as duplicates as they are not identical                          |
 
 The command history navigation feature enhances your efficiency by allowing you to quickly access and reuse previously entered commands, saving you time and effort in managing patient records with ClinicConnect.
 
@@ -320,7 +320,7 @@ Furthermore, certain edits can cause ClinicConnect to behave in unexpected ways 
 | **Add** | `add pn/<PATIENT_NAME> ic/<IC> p/<PATIENT_PHONE> a/<ADDRESS> e/<EMAIL> u/<LEVEL> d/<DOCTOR> nk/<NEXT_OF_KIN_NAME> nkp/<NEXT_OF_KIN_PHONE> nkr/<NEXT_OF_KIN_RELATIONSHIP> [s/<SYMPTOMS>] [n/<NOTES>]` | `add pn/John Doe Jun Kai ic/T0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm` |
 | **Update** | `update INDEX [prefix/<VALUE>]...`                                                                                                                                                                   | `update 1 u/extreme n/Immediate surgery required`                                     |
 | **Search** | `find [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [e/<EMAIL>] [d/<DOCTOR>]`                                                                                                                    | `find e/johndoe@example.com`, `find d/Dr Sally`, `find ic/S1234567A`                  |
-| **Delete** | `delete INDEX` <br> `delete INDEX,INDEX` <br> `delete START-END` <br> `delete INDICES [s/<SYMPTOM>]... [n/]`                                                                                         | `delete 3` <br> `delete 1,4` <br> `delete 2-5` <br> `delete 1 s/fever n/`             |
+| **Delete** | `delete <INDEX>` <br> `delete <INDEX>,<INDEX>` <br> `delete <START>-<END>` <br> `delete <INDICES> [s/<SYMPTOM>]... [n/]`                                                                             | `delete 3` <br> `delete 1,4` <br> `delete 2-5` <br> `delete 1 s/fever n/`             |
 | **List**   | `list [u/<LEVEL>]... [s/<SYMPTOM>]...`                                                                                                                                                               | `list` <br> `list u/high` <br> `list s/fever s/cough`                                 |
 | **Undo**   | `undo`                                                                                                                                                                                               | `undo`                                                                                |
 | **Clear**  | `clear`                                                                                                                                                                                              | `clear`                                                                               |
