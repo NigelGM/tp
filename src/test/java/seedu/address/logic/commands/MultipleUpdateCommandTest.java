@@ -137,4 +137,52 @@ public class MultipleUpdateCommandTest {
         assertCommandFailure(command, model, "IC is an unique identifier and cannot be updated in bulk. "
                 + "Please update this field individually using single update.");
     }
+
+    @Test
+    public void execute_singlePersonWithIc_success() {
+        // Case: Only 1 index + IC present.
+        // Guard should be SKIPPED because targetIndices.size() is not > 1.
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON);
+        String newIc = "S9999999A";
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withIc(newIc).build();
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person updatedFirstPerson = new PersonBuilder(firstPerson).withIc(newIc).build();
+
+        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS,
+                updatedFirstPerson.getName().fullName);
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(firstPerson, updatedFirstPerson);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_multiplePersonsNoIc_success() {
+        // Case: 2 indices + NO IC present (updating Address instead).
+        // Guard should be SKIPPED because ic.isPresent() is false.
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON);
+        String newAddress = "456 Side Street";
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withAddress(newAddress).build();
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        Person updatedFirstPerson = new PersonBuilder(firstPerson).withAddress(newAddress).build();
+        Person updatedSecondPerson = new PersonBuilder(secondPerson).withAddress(newAddress).build();
+
+        String expectedNames = updatedFirstPerson.getName() + ", " + updatedSecondPerson.getName();
+        String expectedMessage = String.format(MultipleUpdateCommand.MESSAGE_UPDATE_MULTIPLE_SUCCESS, expectedNames);
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(firstPerson, updatedFirstPerson);
+        expectedModel.setPerson(secondPerson, updatedSecondPerson);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+
 }
