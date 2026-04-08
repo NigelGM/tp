@@ -184,5 +184,31 @@ public class MultipleUpdateCommandTest {
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
+    @Test
+    public void execute_duplicateIndices_throwsCommandException() {
+        // Path: same index used twice (e.g., update 1,1)
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON);
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder().withAddress("New St").build();
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        assertCommandFailure(command, model, "Duplicate indices detected. "
+                + "Each index should only be listed once (e.g., 'update 1,2' not 'update 1,1').");
+    }
+
+    @Test
+    public void execute_conflictInModel_throwsCommandException() {
+        // Path: Update Person 1 to match Person 3 (who is not in our current index list)
+        List<Index> indices = Arrays.asList(INDEX_FIRST_PERSON);
+        // Grab details of a third person who is NOT being updated
+        Person thirdPerson = model.getFilteredPersonList().get(2);
+        UpdatePersonDescriptor descriptor = new UpdatePersonDescriptorBuilder(thirdPerson).build();
+
+        MultipleUpdateCommand command = new MultipleUpdateCommand(indices, descriptor);
+
+        String expectedMessage = SingleUpdateCommand.MESSAGE_DUPLICATE_PERSON
+                + " (Conflict detected for: " + thirdPerson.getName().fullName + ")";
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
 
 }
