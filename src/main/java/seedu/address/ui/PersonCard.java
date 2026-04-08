@@ -3,6 +3,7 @@ package seedu.address.ui;
 import java.util.Comparator;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -80,9 +81,16 @@ public class PersonCard extends UiPart<Region> {
 
         person.getSymptoms().stream()
                 .sorted(Comparator.comparing(symptom -> symptom.symptomName))
-                .forEach(symptom -> symptoms.getChildren().add(new Label(symptom.symptomName)));
+                .forEach(symptom -> symptoms.getChildren().add(createSymptomLabel(symptom.symptomName)));
 
         notes.setText("Notes: " + person.getNotes().getValue());
+    }
+
+    private Label createSymptomLabel(String symptomName) {
+        Label symptomLabel = new Label(symptomName);
+        symptomLabel.setWrapText(true);
+        symptomLabel.setMaxWidth(180);
+        return symptomLabel;
     }
 
     /**
