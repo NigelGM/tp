@@ -159,10 +159,10 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 
 **Format:**
 
-**Single update:** `update <INDEX> [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>]... [n/<NOTES>]`
+**Single update:** `update <INDEX> [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>][n/<NOTES>] [an/<APPEND_NOTES>]...`
 * Edits the patient at the specified `<INDEX>`.
 
-**Multiple update:** `update <INDEX>,<INDEX>[,<INDEX>,...] [pn/<PATIENT_NAME>] [ic/<IC>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>]... [n/<NOTES>]`
+**Multiple update:** `update <INDEX>,<INDEX>[,<INDEX>,...] [pn/<PATIENT_NAME>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>][n/<NOTES>] [an/<APPEND_NOTES>]...`
 * Edits the patients at the specified indices.
 * Delimiter: Comma (`,`)
 * Duplicated indices (e.g., `update 2,2`) will be rejected.
@@ -170,17 +170,22 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 **Shared rules for updates:**
 * The indices refer to the index numbers shown in the displayed patient list and **must be positive integers**.
 * **At least one** of the optional fields must be provided.
-* Existing values will be overwritten by the input values for all targeted patients.
-* When editing symptoms, the existing symptoms of the patient(s) will be replaced by the newly provided ones (i.e., it is not cumulative).
-* The same argument validation constraints from the `add` command apply here.
+* Existing values will be overwritten by the input values for all targeted patients, **except for appended notes (`an/`)**.
+* **Unique Identifier Restriction:** Because the IC number is a unique identifier, you **cannot** update the IC (`ic/`) when performing a multiple update. You must update ICs individually using the single update command.
+* **Symptoms Replacement:** When editing symptoms (`s/`), the existing symptoms of the patient(s) will be replaced by the newly provided ones (i.e., it is not cumulative).
+* **Note Handling (Overwrite vs Append):** * Using `n/` will overwrite the existing note entirely.
+    * Using `an/` will append the text to the bottom of the existing note on a new line, **automatically prefixing it with the current timestamp** (e.g., `[09 Apr 20:00]`).
+    * *Note constraint:* The total combined length of the notes cannot exceed 500 characters.
 * **All-or-Nothing Execution:** If any of the provided indices are invalid (e.g., larger than the total number of patients currently shown in the list), the entire command will be rejected and **no** patients will be updated.
+* **Duplicate Conflict:** If updating a patient causes them to have the exact same IC as an already existing patient in the database, the command will be rejected.
 
->**Tip**: You can remove all symptoms for the selected patient(s) by typing `s/` without specifying any symptoms after it. Similarly, you can remove existing notes by typing `n/` without any text.
+>**Tip**: You can remove all symptoms for the selected patient(s) by typing `s/` without specifying any symptoms after it. Similarly, you can completely clear existing notes by typing `n/` without any text.
 
 **Examples:**
 * `update 1 p/91234567` Updates the phone number of the 1st patient to be `91234567`.
 * `update 1,3 u/extreme` Updates the urgency level of the 1st and 3rd patients to `extreme`.
 * `update 2,4,5 d/Dr Sally s/Fever` Updates the doctor to `Dr Sally` and replaces all existing symptoms with `Fever` for the 2nd, 4th, and 5th patients.
+* `update 1 an/Patient requested a callback` Appends the text to the 1st patient's existing notes, automatically formatted on a new line as `[09 Apr 20:00] Patient requested a callback`.
 * `update 5 n/` Removes the notes from the 5th patient.
 
 ### Searching for a patient : `find`
