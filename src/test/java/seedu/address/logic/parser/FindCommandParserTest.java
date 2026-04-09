@@ -20,6 +20,7 @@ import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Phone;
 
 public class FindCommandParserTest {
 
@@ -91,6 +92,21 @@ public class FindCommandParserTest {
     @Test
     public void parse_validPhonePrefix_doesNotThrow() {
         assertDoesNotThrow(() -> parser.parse(" p/91234567"));
+    }
+
+    @Test
+    public void parse_invalidPhoneTooShort_throwsParseException() {
+        assertParseFailure(parser, " p/1234567", Phone.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidPhoneTooLong_throwsParseException() {
+        assertParseFailure(parser, " p/123456789", Phone.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidPhoneNonNumeric_throwsParseException() {
+        assertParseFailure(parser, " p/91234abc", Phone.MESSAGE_CONSTRAINTS);
     }
 
     @Test
