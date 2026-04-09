@@ -16,9 +16,12 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.FindCommand;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
+import seedu.address.model.person.Ic;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Phone;
 
@@ -87,6 +90,32 @@ public class FindCommandParserTest {
     @Test
     public void parse_validIcPrefix_doesNotThrow() {
         assertDoesNotThrow(() -> parser.parse(" ic/S1234567A"));
+    }
+
+    @Test
+    public void parse_invalidIcPrefix_throwsParseException() {
+        assertParseFailure(parser, " ic/S1234567", Ic.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidDoctorPrefix_throwsParseException() {
+        assertParseFailure(parser, " d/John123", DoctorName.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " d/Dr@Smith", DoctorName.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " d/@", DoctorName.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidPatientNamePrefix_throwsParseException() {
+        assertParseFailure(parser, " pn/John123", Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " pn/Alice@Bob", Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " pn/@", Name.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidLegacyPatientName_throwsParseException() {
+        assertParseFailure(parser, "@", Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "John123", Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Alice @Bob", Name.MESSAGE_CONSTRAINTS);
     }
 
     @Test

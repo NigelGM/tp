@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
@@ -61,6 +62,11 @@ public class FindCommandParser implements Parser<FindCommand> {
         // Legacy behaviour: no prefixes, treat entire args as name keywords
         if (!hasName && !hasIc && !hasPhone && !hasEmail && !hasDoctor) {
             List<String> legacyKeywords = Arrays.asList(trimmedArgs.split("\\s+"));
+            for (String keyword : legacyKeywords) {
+                if (!Name.isValidName(keyword)) {
+                    throw new ParseException(Name.MESSAGE_CONSTRAINTS);
+                }
+            }
             String criteriaDescription = "Patient Name: " + trimmedArgs;
             return new FindCommand(new NameContainsKeywordsPredicate(legacyKeywords), criteriaDescription);
         }
