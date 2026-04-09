@@ -15,10 +15,15 @@ import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
+import seedu.address.model.person.Ic;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Phone;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -78,11 +83,33 @@ public class FindCommandParser implements Parser<FindCommand> {
         boolean hasDoctor = argMultimap.getValue(PREFIX_DOCTOR).isPresent();
 
         boolean hasAnySearchField = hasName || hasIc || hasPhone || hasEmail || hasDoctor;
+        String preamble = argMultimap.getPreamble().trim();
+
+        // Handle legacy format: if no recognized prefixes, treat preamble as legacy patient name
         if (!hasAnySearchField) {
-            throw new ParseException(MESSAGE_REQUIRES_PREFIX);
+            if (preamble.isEmpty()) {
+                throw new ParseException(MESSAGE_REQUIRES_PREFIX);
+            }
+            // Check if preamble contains valid patient names
+            List<String> nameKeywords = Arrays.asList(preamble.split("\\s+"));
+            boolean allValid = true;
+            for (String keyword : nameKeywords) {
+                if (!Name.isValidName(keyword)) {
+                    allValid = false;
+                    break;
+                }
+            }
+
+            // If all keywords are valid, it's valid legacy format but requires prefix
+            if (allValid) {
+                throw new ParseException(MESSAGE_REQUIRES_PREFIX);
+            }
+
+            // If any keyword is invalid, throw NAME validation error
+            throw new ParseException(Name.MESSAGE_CONSTRAINTS);
         }
 
-        if (!argMultimap.getPreamble().trim().isEmpty()) {
+        if (!preamble.isEmpty()) {
             throw new ParseException(MESSAGE_PREAMBLE_NOT_ALLOWED);
         }
 
@@ -97,6 +124,12 @@ public class FindCommandParser implements Parser<FindCommand> {
             }
             assertNoUnknownPrefixTokensInValues(nameArgs);
             List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
+            // Validate each keyword
+            for (String keyword : nameKeywords) {
+                if (!Name.isValidName(keyword)) {
+                    throw new ParseException(Name.MESSAGE_CONSTRAINTS);
+                }
+            }
             Predicate<Person> namePredicate = new NameContainsKeywordsPredicate(nameKeywords);
             predicate = namePredicate;
             criteriaBuilder.append("Patient Name: ").append(nameArgs);
@@ -109,6 +142,10 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(icArg);
+            // Validate IC format
+            if (!Ic.isValidIc(icArg)) {
+                throw new ParseException(Ic.MESSAGE_CONSTRAINTS);
+            }
             String icToMatch = icArg;
             Predicate<Person> icPredicate = person -> person.getIc().value.equalsIgnoreCase(icToMatch);
             predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
@@ -125,6 +162,10 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(phoneArg);
+            // Validate phone format
+            if (!Phone.isValidPhone(phoneArg)) {
+                throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
+            }
             String phoneToMatch = phoneArg;
             Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);
             predicate = predicate == null ? phonePredicate : predicate.or(phonePredicate);
@@ -141,6 +182,10 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(emailArg);
+            // Validate email format
+            if (!Email.isValidEmail(emailArg)) {
+                throw new ParseException(Email.MESSAGE_CONSTRAINTS);
+            }
             List<String> emailKeywords = Arrays.asList(emailArg.split("\\s+"));
             Predicate<Person> emailPredicate = new EmailContainsKeywordsPredicate(emailKeywords);
             predicate = predicate == null ? emailPredicate : predicate.or(emailPredicate);
@@ -158,6 +203,12 @@ public class FindCommandParser implements Parser<FindCommand> {
             }
             assertNoUnknownPrefixTokensInValues(doctorArg);
             List<String> doctorNameKeywords = Arrays.asList(doctorArg.split("\\s+"));
+            // Validate each keyword
+            for (String keyword : doctorNameKeywords) {
+                if (!DoctorName.isValidDoctorName(keyword)) {
+                    throw new ParseException(DoctorName.MESSAGE_CONSTRAINTS);
+                }
+            }
             Predicate<Person> doctorNamePredicate = new DoctorNameContainsKeywordsPredicate(doctorNameKeywords);
             predicate = predicate == null ? doctorNamePredicate : predicate.or(doctorNamePredicate);
             if (criteriaBuilder.length() > 0) {
