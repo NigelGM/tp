@@ -9,21 +9,16 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PATIENT_PHONE;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.DoctorName;
 import seedu.address.model.person.DoctorNameContainsKeywordsPredicate;
-import seedu.address.model.person.Email;
 import seedu.address.model.person.EmailContainsKeywordsPredicate;
-import seedu.address.model.person.IcContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Phone;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -101,6 +96,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(nameArgs);
+            String normalizedNameArgs = nameArgs.replaceAll("\\s+", " ");
+            ParserUtil.parseName(normalizedNameArgs);
             List<String> nameKeywords = Arrays.asList(nameArgs.split("\\s+"));
             Predicate<Person> namePredicate = new NameContainsKeywordsPredicate(nameKeywords);
             predicate = namePredicate;
@@ -114,6 +111,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(icArg);
+            ParserUtil.parseIc(icArg);
             String icToMatch = icArg;
             Predicate<Person> icPredicate = person -> person.getIc().value.equalsIgnoreCase(icToMatch);
             predicate = predicate == null ? icPredicate : predicate.or(icPredicate);
@@ -130,6 +128,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(phoneArg);
+            ParserUtil.parsePhone(phoneArg);
             String phoneToMatch = phoneArg;
             Predicate<Person> phonePredicate = person -> person.getPhone().value.equals(phoneToMatch);
             predicate = predicate == null ? phonePredicate : predicate.or(phonePredicate);
@@ -147,6 +146,9 @@ public class FindCommandParser implements Parser<FindCommand> {
             }
             assertNoUnknownPrefixTokensInValues(emailArg);
             List<String> emailKeywords = Arrays.asList(emailArg.split("\\s+"));
+            for (String emailKeyword : emailKeywords) {
+                ParserUtil.parseEmail(emailKeyword);
+            }
             Predicate<Person> emailPredicate = new EmailContainsKeywordsPredicate(emailKeywords);
             predicate = predicate == null ? emailPredicate : predicate.or(emailPredicate);
             if (criteriaBuilder.length() > 0) {
@@ -162,6 +164,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             assertNoUnknownPrefixTokensInValues(doctorArg);
+            ParserUtil.parseDoctorName(doctorArg);
             List<String> doctorNameKeywords = Arrays.asList(doctorArg.split("\\s+"));
             Predicate<Person> doctorNamePredicate = new DoctorNameContainsKeywordsPredicate(doctorNameKeywords);
             predicate = predicate == null ? doctorNamePredicate : predicate.or(doctorNamePredicate);

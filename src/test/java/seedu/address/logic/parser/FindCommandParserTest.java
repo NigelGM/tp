@@ -136,9 +136,12 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_invalidLegacyPatientName_throwsParseException() {
-        assertParseFailure(parser, "@", Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "John123", Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Alice @Bob", Name.MESSAGE_CONSTRAINTS);
+        String requiresPrefixMessage = "Find requires at least one search prefix. "
+                + "Only pn/, ic/, p/, e/, and d/ are allowed.\n"
+                + FindCommand.MESSAGE_USAGE;
+        assertParseFailure(parser, "@", requiresPrefixMessage);
+        assertParseFailure(parser, "John123", requiresPrefixMessage);
+        assertParseFailure(parser, "Alice @Bob", requiresPrefixMessage);
     }
 
     @Test
