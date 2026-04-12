@@ -42,7 +42,7 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 
 **Notes about the command format:**<br>
 
-* Words in `UPPER_CASE` and enclosed in angle brackets `<>` describes parameters to be supplied by the user.<br/>
+* Words in `UPPER_CASE` and enclosed in angle brackets `<>` describe parameters to be supplied by the user.<br/>
   e.g. in `add pn/<PATIENT_NAME>`, `<PATIENT_NAME>` is a parameter which can be used as `add pn/John Doe`.
 * Items in square brackets are optional.<br/>
   e.g. `[n/<NOTES>]` can be used as `n/Patient has history of asthma` or simply left out.
@@ -51,6 +51,7 @@ ClinicConnect is a **desktop app for triage coordinators to manage patient recor
 * All commands and prefixes are case-insensitive.
 * Leading and trailing spaces are ignored/trimmed automatically.
 * Internal spaces within a command (i.e. `d ele te 1`) or prefix (i.e. `p  n/`) are not allowed and will be rejected.
+* Spaces are not allowed before and after the delimiters (i.e. `,` and `-`) in index-based commands (e.g. `update 1 , 2` will be rejected).
 
 </box>
     
