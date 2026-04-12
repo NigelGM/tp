@@ -72,8 +72,8 @@ Records comprehensive patient information, add it to the address book and saves 
 
 **Patient Name (`pn/`):**
 * The patient's name.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank names that only contain spaces.
 
 **IC Number (`ic/`):**
 * The patient's IC number.
@@ -83,7 +83,9 @@ Records comprehensive patient information, add it to the address book and saves 
 
 **Patient Phone Number (`p/`):**
 * The patient's phone number.
-* Must contain exactly 8 digits and contain only `0-9`. For example, `98765432` is a valid phone number.
+* Can contain digits, spaces, and hyphens (`-`), with **an optional** leading plus (`+`).
+* Must start with a digit. If `+` is used, it must appear only once at the start and be immediately followed by a digit.
+* Must contain between 3 and 15 digits (excluding spaces and hyphens).
 
 **Address (`a/`):**
 * The patient's address.
@@ -100,22 +102,24 @@ Records comprehensive patient information, add it to the address book and saves 
 
 **Doctor Name (`d/`):**
 * The name of the doctor assigned to the patient.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank doctor names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank doctor names that only contain spaces.
 
 **Next-of-Kin Name (`nk/`):**
 * The name of the patient's next of kin.
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank next-of-kin names that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank next-of-kin names that only contain spaces.
 
 **Next-of-Kin Phone Number (`nkp/`):**
 * The phone number of the patient's next of kin.
-* Must contain exactly 8 digits and contain only `0-9`. For example, `87654321` is a valid next-of-kin phone number.
+* Can contain digits, spaces, and hyphens (`-`), with **an optional** leading (`+`).
+* Must start with a digit. If `+` is used, it must appear only once at the start and be immediately followed by a digit.
+* Must contain between 3 and 15 digits (excluding spaces and hyphens).
 
 **Next-of-Kin Relationship (`nkr/`):**
 * The relationship of the next of kin to the patient (e.g., "Mother", "Brother", "Friend").
-* Can contain letters (A-Z, a-z), spaces, commas (,), hyphens (-), apostrophes ('), and periods (.).
-* It is enforced that the first character must be a letter (A-Z, a-z) to prevent blank relationships that only contain spaces.
+* Can contain letters (`A-Z, a-z`), spaces, commas (`,`), hyphens (`-`), apostrophes (`'`), and periods (`.`).
+* It is enforced that the first character must be a letter (`A-Z, a-z`) to prevent blank relationships that only contain spaces.
 
 **Symptoms (`s/`):**
 * The symptoms that the patient is experiencing.
@@ -134,14 +138,16 @@ Records comprehensive patient information, add it to the address book and saves 
 * If the prefix is declared with a blank note (e.g., `n/` without any notes), it will be treated as an empty note (i.e., the patient will have no notes).
 * If the prefix is not declared at all, it will be treated as if the patient has no notes as well.
 
-**Examples:**
+**Example:**
 * `add pn/John Doe Jun Kai ic/M0123456B p/12345678 a/21 Serangan Road e/john@doe.com u/high d/Dr Tan Ah Beng nk/Mary Doe nkp/87654321 nkr/Mother s/Diabetic n/Admitted at 12pm`
+  * Expected output: `You have added John Doe Jun Kai who has an urgency level of HIGH.`
+  * ![AddCommandSuccessfulExecution.png](images/AddCommandSuccessfulExecution.png)
 
 
 <br>
 
 <details>
-<summary> <strong>Why is '/' not allowed in names or next of kin relationship?</strong></summary>
+<summary> <strong>Why is '/' not allowed in names or next-of-kin relationship?</strong></summary>
 
 <br>
 
