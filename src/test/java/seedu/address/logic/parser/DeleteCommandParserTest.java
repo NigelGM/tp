@@ -63,6 +63,12 @@ public class DeleteCommandParserTest {
     }
 
     @Test
+    public void parse_invalidArgsNegativeIndex_throwsParseException() {
+        assertParseFailure(parser, "-1", String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, SingleDeleteCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_validArgsMultipleIndices_returnsDeleteCommand() {
         assertParseSuccess(parser, "1,2,3",
                 new MultipleDeleteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, INDEX_THIRD_PERSON));
