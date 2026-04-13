@@ -165,7 +165,7 @@ Updates existing patient details in ClinicConnect. You can update a single patie
 
 **Multiple update:** `update <INDEX>,<INDEX>[,<INDEX>,...] [pn/<PATIENT_NAME>] [p/<PATIENT_PHONE>] [a/<ADDRESS>] [e/<EMAIL>] [u/<LEVEL>] [d/<DOCTOR>] [nk/<NEXT_OF_KIN_NAME>] [nkp/<NEXT_OF_KIN_PHONE>] [nkr/<NEXT_OF_KIN_RELATIONSHIP>] [s/<SYMPTOM>][n/<NOTES>] [an/<APPEND_NOTES>]...`
 * Edits the patients at the specified indices.
-* Delimiter: Comma (`,`). No spaces are allowed between the indices and commas (e.g., update 1, 2 will be rejected as an invalid format).
+* Delimiter: Comma (`,`).
 * Duplicated indices (e.g., `update 2,2`) will be rejected.
 
 **Shared rules for updates:**
