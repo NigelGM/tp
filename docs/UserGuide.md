@@ -125,6 +125,7 @@ Records comprehensive patient information, add it to the address book and saves 
 * If the prefix is declared then there must be a non-blank symptom after it (e.g., `s/` without any symptoms will be rejected).
 * If the prefix is not declared at all, it will be treated as if the patient has no symptoms.
 * Symptoms are compared case-insensitively to prevent duplicated entries. However, differences in internal spacing (e.g., "runny nose" vs "runnynose") are treated as distinct symptoms.
+* Duplicate symptoms are treated as a single symptom (e.g., `s/fever s/FEVER` will be treated as one symptom "fever").
 
 **Notes (`n/`):**
 * Additional notes about the patient.
